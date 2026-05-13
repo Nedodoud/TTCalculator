@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref ,watch, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import SliderGroup from "./components/SliderGroup.vue";
 import CardList from "./components/CardList.vue";
 
@@ -28,7 +28,7 @@ function handleMouseOver(e: MouseEvent) {
   if (target.classList.value != "el-slider__stop el-slider__marks-stop") return;
   
   const mark = target.closest(".el-slider__marks-stop");
-  const container = mark.closest(".slider-block") as HTMLElement;
+  const container = mark?.closest(".slider-block") as HTMLElement;
   if (!container) return;
   
   // console.log("work");

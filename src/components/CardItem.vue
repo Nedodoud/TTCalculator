@@ -1,3 +1,4 @@
+/* eslint-disable */
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from "vue";
 import type { Card } from "../types";
@@ -308,7 +309,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
                           placeholder="Own mechanics" 
                           @change="applyTaskType(card.taskType)">
                   <el-option
-                    v-for="(config, name) in TASK_TYPES"
+                    v-for="(_, name) in TASK_TYPES"
                     :key="name"
                     :value="name"
                   />
@@ -374,14 +375,16 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
   :key="tag"
   class="slider-block"
 >
+
         <label class="slider-label">{{ tag }}</label>
-  
+        <!--            :modelValue="Math.min(card.tagValues[tag], getMaxForTag(tag))" -->
         <SmartSlider
             v-model="card.tagValues[tag]"
             :min="0"
             :max="getMaxForTag(tag)"
-            :modelValue="Math.min(card.tagValues[tag], getMaxForTag(tag))"
+
             :recommended="getRecommendedForTag(tag, card.taskType)"
+            :predicted="-1"
           />
       </div>
     </div>

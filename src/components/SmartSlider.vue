@@ -22,7 +22,7 @@ function clamp(val: number) {
 var currentValue = ref(clamp(props.modelValue ?? props.min));
 
 function setMarks(){
-  const minMax = {};
+  const minMax:Record<number, string> = {};
   minMax[props.min] = props.min.toString();
   minMax[props.max] = props.max.toString();
   if(props.recommended > 0){
@@ -31,6 +31,7 @@ function setMarks(){
   if(props.predicted > 0){
     minMax[props.predicted] = props.predicted.toString();
   }
+  // @ts-expect-error unknown external type
   return shallowReactive<Marks>(minMax);
 }
 
@@ -38,17 +39,8 @@ function setMarks(){
 const minMaxMarks = computed(setMarks);
 
 
-const recommendedPercent = computed(() =>
-  ((props.recommended - props.min) / (props.max - props.min)) * 100
-);
-
-const predictedPercent = computed(() =>
-  ((props.predicted - props.min) / (props.max - props.min)) * 100
-);
-
-
 // input
-function onInput(e: Event) {
+function onInput(e: any) {
   const value = e;
   console.log(e, currentValue);
   emit("update:modelValue", clamp(value));

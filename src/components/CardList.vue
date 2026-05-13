@@ -22,7 +22,7 @@ function addCard() {
     planned: false,
     tags: [],
     tagValues: {},
-    recommendedTagValues: [],
+    recommendedTagValues: {},
     priority: 0,
     taskType: "Own mechanics",
     complexity: 2, // 👈 дефолт

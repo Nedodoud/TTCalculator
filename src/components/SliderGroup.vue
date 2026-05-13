@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from "vue";
-import { calculateSum } from "../logic/calculate";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import PieChart from "./PieChart.vue";
 
 // основные параметры
@@ -26,27 +25,11 @@ const priorities = computed(() => {
   return Array.from(unique).sort((a, b) => a - b);
 });
 
-// Роли (по тегам)
-const components = ref([
-  { tag: "Code", value: 0 },
-  { tag: "Art", value: 0 },
-  { tag: "Management", value: 0 }
-]);
-
-// пример рекомендации
-const sum = computed(() =>
-  time.value + teamSize.value
-);
 
 // Ограничения степперов
 const totalComponents = computed(() =>
   props.components.reduce((sum, c) => sum + c.value, 0)
 );
-
-const canIncrease = computed(() =>
-  totalComponents.value < teamSize.value
-);
-
 
 const selectedPriority = ref<number | "total" | null>(null);
 
@@ -69,7 +52,9 @@ const tagSums = computed(() => {
   return result;
 });
 
-function onInput(comp: Component, e: Event) {
+
+  // @ts-expect-error unknown external type
+function onInput(comp: Component, e: any) {
   const newVal = e;
   const currentSumWithoutThis = totalComponents.value - comp.value;
 
@@ -235,7 +220,7 @@ const recommendationText = computed(() => {
   const tagUsage: Record<string, number> = {};
 
   tasks.forEach(task => {
-    task.tags.forEach(tag => {
+    (task.tags as string[]).forEach(tag => {
       const value = task.tagValues[tag] ?? 0;
       tagUsage[tag] = (tagUsage[tag] || 0) + value;
     });
@@ -260,7 +245,7 @@ const recommendationText = computed(() => {
   // 4. Per-task efficiency
   // =========================
   tasks.forEach(task => {
-    Object.entries(task.recommendedTagValues).forEach(([tag, recommended]) => {
+    Object.entries(task.recommendedTagValues as Record<string, number>).forEach(([tag, recommended]) => {
 
       const actual = task.tagValues[tag] ?? 0;
 
