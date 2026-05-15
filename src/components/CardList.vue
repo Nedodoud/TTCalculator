@@ -11,7 +11,7 @@ const props = defineProps<{
   teamComponents: { tag: string; value: number }[];
 }>();
 
-let nextId = 1;
+let nextId = 0;
 
 function addCard() {
   console.log(cards);
@@ -40,23 +40,45 @@ function deleteCard(id: number) {
 </script>
 
 <template>
-    <h2>Mechanics cards</h2>
-  <div>
-    <button @click="addCard" >➕ Add Card</button>
 
-    <div class="card-list">
-      <CardItem
-          v-for="card in cards"
-          :key="card.id"
-          :teamComponents="teamComponents"
-          :card="card"
-          @delete="deleteCard"
-      />
-    </div>
+  <div class="header-right">
+    <h2>Mechanics cards</h2>
+    <button @click="addCard" >➕ Add Card</button>
+      <div class="right">
+        <div class="card-list">
+          <CardItem
+              v-for="card in cards"
+              :key="card.id"
+              :teamComponents="teamComponents"
+              :card="card"
+              @delete="deleteCard"
+          />
+        </div>
+      </div>
+      
   </div>
 </template>
 
 <style scoped>
+.header-right {
+  display: flex;
+  flex-direction: column;
+max-width: 100%;
+}
+
+.header-right button {
+ margin-bottom: 5px;
+}
+
+.right {
+  flex: 1;
+  border-left: 1px solid #ccc;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-y: auto;
+}
+
+
 .card-list {
   margin-top: 16px;
 }

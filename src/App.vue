@@ -90,12 +90,10 @@ onUnmounted(() => {
       />
     </div>
 
-    <div class="right">
-      <CardList
+    <CardList
         :teamComponents="teamComponents"
         v-model:cards="cards"
       />
-    </div>
     <div v-if="showTooltip" 
         class="tooltip"
         :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
@@ -124,12 +122,6 @@ onUnmounted(() => {
 }
 
 /* Правая часть (1/3) */
-.right {
-  flex: 1;
-  border-left: 1px solid #ccc;
-  padding-left: 20px;
-  overflow-y: auto;
-}
 
 
 .tooltip {
