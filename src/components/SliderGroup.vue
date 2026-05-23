@@ -6,7 +6,7 @@ import PieChart from "./PieChart.vue";
 const time = ref<number>(50);
 const teamSize = ref<number>(5);
 
-const topHeight = ref(200); // начальная высота в px
+const topHeight = ref(400); // начальная высота в px
 const isResizing = ref(false);
 
 const props = defineProps<{
@@ -16,6 +16,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "update:components", value: { tag: string; value: number }[]): void;
+  (e: "update:teamSize", value: number): void;
 }>();
 
 const priorities = computed(() => {
@@ -55,14 +56,13 @@ const tagSums = computed(() => {
 
   // @ts-expect-error unknown external type
 function onInput(comp: Component, e: any) {
-  const newVal = e;
-  const currentSumWithoutThis = totalComponents.value - comp.value;
+  // повышаем предел
+  const updated = totalComponents.value;
+  teamSize.value = updated;
 
-  // не даём выйти за предел
-  const maxAllowed = teamSize.value - currentSumWithoutThis;
-  const finalValue = Math.min(newVal, maxAllowed);
-
-  updateComponent(comp.tag, finalValue);
+  updateComponent(comp.tag, e);
+  emit("update:teamSize", updated);
+  
 }
 
 function updateComponent(tag: string, newValue: number) {
@@ -207,7 +207,8 @@ const recommendationText = computed(() => {
   // 2. Short tasks
   // =========================
   tasks.forEach(task => {
-    if (task.complexity < avgTime * 0.5) {
+    const acComplexity = task.planned ? task.complexity : task.complexity * 7; 
+    if (acComplexity < avgTime * 0.5) {
       recommendations.push(
         `Task "${task.title}" is much shorter than others. Consider reallocating resources.`
       );
@@ -219,27 +220,128 @@ const recommendationText = computed(() => {
   // =========================
   const tagUsage: Record<string, number> = {};
 
-  tasks.forEach(task => {
-    (task.tags as string[]).forEach(tag => {
-      const value = task.tagValues[tag] ?? 0;
-      tagUsage[tag] = (tagUsage[tag] || 0) + value;
+  // =====================================
+  // обычный режим (конкретный приоритет)
+  // =====================================
+
+  if (selectedPriority.value !== "total") {
+
+    tasks.forEach(task => {
+
+      (task.tags as string[]).forEach(tag => {
+
+        const value = task.tagValues[tag] ?? 0;
+
+        tagUsage[tag] = (tagUsage[tag] || 0) + value;
+
+      });
+
     });
-  });
 
-  Object.entries(tagUsage).forEach(([tag, used]) => {
-    const teamTag = props.components.find(t => t.tag === tag);
-    const available = teamTag?.value ?? 0;
+  }
 
-    if (used > available) {
+  // =====================================
+  // TOTAL режим
+  // =====================================
+
+  else {
+
+    // сумма тегов отдельно по каждому приоритету
+    const priorityTagUsage: Record<string, Record<string, number>> = {};
+
+    props.cards.forEach(task => {
+
+      const priority = String(task.priority);
+
+      if (!priorityTagUsage[priority]) {
+        priorityTagUsage[priority] = {};
+      }
+
+      (task.tags as string[]).forEach(tag => {
+
+        const value = task.tagValues[tag] ?? 0;
+
+        priorityTagUsage[priority][tag] =
+          (priorityTagUsage[priority][tag] || 0) + value;
+
+      });
+
+    });
+
+    // ищем максимальное значение тега среди приоритетов
+
+    Object.values(priorityTagUsage).forEach(priorityData => {
+
+      Object.entries(priorityData).forEach(([tag, value]) => {
+
+        tagUsage[tag] = Math.max(
+          tagUsage[tag] || 0,
+          value
+        );
+
+      });
+
+    });
+
+  }
+  
+
+  // =========================
+// 3.5 Total-mode resource analysis
+// =========================
+
+
+  props.components.forEach(component => {
+
+    const tag = component.tag;
+    const available = component.value;
+
+    // максимальное использование тега
+    // среди всех приоритетов
+    const maxUsed = tagUsage[tag] ?? 0;
+    
+    console.log(tag, maxUsed);
+
+    // ---------------------------------
+    // тег вообще не используется
+    // ---------------------------------
+        
+    if (selectedPriority.value === "total") {
+    if (maxUsed === 0 && available > 0) {
+
       recommendations.push(
-        `Resource overload: ${tag} requires ${used}, but only ${available} available.`
+        `Unused resource detected: ${tag} has ${available} assigned team members, but no tasks currently use this resource.`
       );
-    } else if (available > 0 && used < available * 0.5) {
-      recommendations.push(
-        `Low utilization: ${tag} resources are underused (${used}/${available}).`
-      );
+
     }
+    }
+
+    // ---------------------------------
+    // недоиспользование
+    // ---------------------------------
+
+    if (maxUsed !== 0 && maxUsed < available) {
+
+      recommendations.push(
+        `Underutilized resource: ${tag} uses at most ${maxUsed}/${available} available team members across priorities.`
+      );
+
+    }
+
+    // ---------------------------------
+    // переиспользование
+    // ---------------------------------
+    else if (maxUsed > available) {
+
+      recommendations.push(
+        `Resource overload: ${tag} requires ${maxUsed}, but only ${available} team members are available at peak priority load.`
+      );
+
+    }
+
   });
+
+
 
   // =========================
   // 4. Per-task efficiency
@@ -342,13 +444,14 @@ const recommendationText = computed(() => {
 
       <!-- Слайдер команды -->
       
-      <div class="slider-block">
+      <div class="slider-block" data-tutorial="team-size-slider">
         <span class="demonstration">Desired number of team members</span>
         <el-slider v-model.number="teamSize"  :min="1" :max="50" show-input />
       </div>
 
       <!-- Роли в команде -->
-        <h3>Roles</h3>
+      <div class="top" data-tutorial="team-roles">
+        <h2>Roles</h2>
 
         <div v-for="comp in props.components" 
           :key="comp.tag"
@@ -359,14 +462,14 @@ const recommendationText = computed(() => {
                 @change="onInput(comp, $event)"/>
         
           </div>
-
+        </div>
       </div>
       <!-- ручка для изменениея размера ферхнего блока-->
-      <div class="resize-handle" @mousedown="startResize"></div>
+      <div class="resize-handle" @mousedown="startResize" data-tutorial="team-resize-hangle"></div>
 
     <!-- 🔽 НИЗ -->
-    <div class="bottom">
-          <div class="priority-buttons">
+    <div class="bottom" data-tutorial="recommendation-block">
+          <div class="priority-buttons" data-tutorial="recommendation-priority-buttons">
           <button 
             v-for="p in priorities"
             :key="p"

@@ -2,6 +2,8 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import SliderGroup from "./components/SliderGroup.vue";
 import CardList from "./components/CardList.vue";
+import TutorialOverlay from "./components/tutorial/TutorialOverlay.vue";
+import TutorialWelcomeModal from "./components/tutorial/TutorialWelcomeModal.vue";
 
 
 // 👇 глобальное состояние команды
@@ -13,6 +15,8 @@ const teamComponents = ref([
   { tag: "Gamedesigner", value: 0 , extraEffCoef: 0}
 ]);
 
+const showTutorial = ref(false);
+const showTutorialWelcome = ref(false);
 
 const cards = ref([]);
 
@@ -68,7 +72,24 @@ function handleMouseOut(e: MouseEvent) {
   showTooltip.value = false;
 }
 
+function startTutorial() {
+
+  showTutorialWelcome.value = false;
+
+  showTutorial.value = true;
+
+}
+
+
+function closeTutorialWelcome() {
+
+  showTutorialWelcome.value = false;
+
+}
+
 onMounted(() => {
+
+  showTutorialWelcome.value = true;
   document.addEventListener("mouseover", handleMouseOver);
   document.addEventListener("mouseout", handleMouseOut);
 });
@@ -83,17 +104,39 @@ onUnmounted(() => {
 <template>
   <div class="app">
 
+      <TutorialWelcomeModal
+        v-if="showTutorialWelcome"
+        @start="startTutorial"
+        @close="closeTutorialWelcome"
+      />
+
+      <button
+        class="tutorial-open-button"
+        @click="startTutorial"
+      >
+        ?
+      </button>
+
+    <TutorialOverlay
+      v-if="showTutorial"
+      @close="showTutorial = false"
+    />
+
     <div class="left">  
+
+
       <SliderGroup
         v-model:components="teamComponents"
         :cards="cards"
       />
     </div>
 
-    <CardList
-        :teamComponents="teamComponents"
-        v-model:cards="cards"
-      />
+      <CardList
+          :teamComponents="teamComponents"
+          v-model:cards="cards"
+          data-tutorial="task-card-list"
+        />
+
     <div v-if="showTooltip" 
         class="tooltip"
         :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
@@ -134,4 +177,31 @@ onUnmounted(() => {
   pointer-events: none;
   z-index: 9999;
 }
+
+.tutorial-open-button {
+  position: fixed;
+
+  left: 20px;
+  top: 20px;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background: var(--accent);
+  color: white;
+
+  font-size: 15px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  z-index: 5000;
+  width: 27px;
+  height: 27px;
+}
+
 </style>

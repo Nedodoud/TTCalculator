@@ -61,17 +61,18 @@ function deleteCard(id: number) {
 
 <style scoped>
 .header-right {
+  flex: 1;
   display: flex;
   flex-direction: column;
-max-width: 100%;
+
 }
 
 .header-right button {
  margin-bottom: 5px;
+ width: 100%;
 }
 
 .right {
-  flex: 1;
   border-left: 1px solid #ccc;
   padding-left: 20px;
   padding-right: 20px;

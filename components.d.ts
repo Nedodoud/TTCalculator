@@ -22,5 +22,7 @@ declare module 'vue' {
     PieChart: typeof import('./src/components/PieChart.vue')['default']
     SliderGroup: typeof import('./src/components/SliderGroup.vue')['default']
     SmartSlider: typeof import('./src/components/SmartSlider.vue')['default']
+    TutorialOverlay: typeof import('./src/components/tutorial/TutorialOverlay.vue')['default']
+    TutorialWelcomeModal: typeof import('./src/components/tutorial/TutorialWelcomeModal.vue')['default']
   }
 }
