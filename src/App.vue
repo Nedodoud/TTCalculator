@@ -4,6 +4,7 @@ import SliderGroup from "./components/SliderGroup.vue";
 import CardList from "./components/CardList.vue";
 import TutorialOverlay from "./components/tutorial/TutorialOverlay.vue";
 import TutorialWelcomeModal from "./components/tutorial/TutorialWelcomeModal.vue";
+import type { Card } from "./types";
 
 
 // 👇 глобальное состояние команды
@@ -18,8 +19,8 @@ const teamComponents = ref([
 const showTutorial = ref(false);
 const showTutorialWelcome = ref(false);
 
-const cards = ref([]);
-const cardListRef = ref([]);
+const cards = ref<Card[]>([]);
+const cardListRef = ref<InstanceType<typeof CardList> | null>(null);
 
 // подсказки точек на слайдерах
 
