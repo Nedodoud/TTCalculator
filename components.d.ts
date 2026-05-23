@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     CardItem: typeof import('./src/components/CardItem.vue')['default']
     CardList: typeof import('./src/components/CardList.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     ElOption: typeof import('element-plus/es')['ElOption']

@@ -17,6 +17,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:components", value: { tag: string; value: number }[]): void;
   (e: "update:teamSize", value: number): void;
+  (e: "reset-all"): void;
 }>();
 
 const priorities = computed(() => {
@@ -412,6 +413,13 @@ const recommendationText = computed(() => {
 
 });
 
+function resetAll() {
+  time.value = 50;
+  teamSize.value = 5;
+  emit("reset-all");
+}
+
+
 </script>
 
 <template>
@@ -421,19 +429,25 @@ const recommendationText = computed(() => {
     :style="{ height: topHeight + 'px' }">
 
       <div class="header-block">
-      <h2>Resourses</h2> 
+        <el-tooltip class="box-item" effect="dark" placement="bottom-start">
+          <template #content>
+            Here you need to enter the resources available to your team for project development, namely:
+            <ul>
+              <li>Estimated development time</li>
+              <li>Total number of people on the team</li>
+            </ul>
+            Please note: the estimated development time is indicated in working days, assuming that one working day lasts 8 hours.
+          </template>
+          <el-icon :size="25" color="var(--negative-accent)" ><QuestionFilled /></el-icon>
+        </el-tooltip>
+        <h2>Resourses</h2> 
+        <el-tooltip class="box-item" effect="dark" placement="bottom-start">
+          <template #content>
+            Clear all
+          </template>
+          <el-button size="small" color="var(--negative-accent)" icon="Refresh" circle @click="resetAll" />
 
-      <el-tooltip class="box-item" effect="dark" placement="right-start">
-        <template #content>
-          Here you need to enter the resources available to your team for project development, namely:
-          <ul>
-            <li>Estimated development time</li>
-            <li>Total number of people on the team</li>
-          </ul>
-          Please note: the estimated development time is indicated in working days, assuming that one working day lasts 8 hours.
-        </template>
-        <el-icon :size="25" color="#ffffff" ><QuestionFilled /></el-icon>
-      </el-tooltip>
+        </el-tooltip>
       </div>
 
       <!-- Слайдер времени -->
@@ -580,7 +594,8 @@ const recommendationText = computed(() => {
 }
 
 .header-block h2 {
-  margin-right: 15px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .slider-block .el-slider {

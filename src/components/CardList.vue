@@ -34,8 +34,13 @@ function addCard() {
 
 function deleteCard(id: number) {
   cards.value = cards.value.filter(c => c.id !== id);
+  nextId--;
   emit("update:cards", cards.value);
 }
+
+defineExpose({
+  deleteCard
+});
 
 </script>
 

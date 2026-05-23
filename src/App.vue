@@ -19,6 +19,7 @@ const showTutorial = ref(false);
 const showTutorialWelcome = ref(false);
 
 const cards = ref([]);
+const cardListRef = ref([]);
 
 // подсказки точек на слайдерах
 
@@ -87,6 +88,26 @@ function closeTutorialWelcome() {
 
 }
 
+function resetAllData() {
+
+  // reset team sliders
+
+  teamComponents.value.forEach(component => {
+
+    component.value = 0;
+
+  });
+
+  // remove all cards
+
+  [...cards.value].forEach(card => {
+
+    cardListRef.value?.deleteCard(card.id);
+
+  });
+
+}
+
 onMounted(() => {
 
   showTutorialWelcome.value = true;
@@ -127,11 +148,13 @@ onUnmounted(() => {
 
       <SliderGroup
         v-model:components="teamComponents"
+        @reset-all="resetAllData"
         :cards="cards"
       />
     </div>
 
       <CardList
+          ref="cardListRef"
           :teamComponents="teamComponents"
           v-model:cards="cards"
           data-tutorial="task-card-list"
