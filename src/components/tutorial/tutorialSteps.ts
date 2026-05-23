@@ -14,19 +14,22 @@ export const tutorialSteps: TutorialStep[] = [
   }
   ,{
     id: "task-card-list",
-    text: ""
+    text: "Each card is a separate mechanic."
   }
   ,{
     id: "team-resize-hangle",
-    text: ""
+    text: "This part is movable, try pulling it."
   }
   ,{
     id: "recommendation-block",
-    text: ""
+    text: "Recommendations and warnings appear dynamically here."
   }
   ,{
     id: "recommendation-priority-buttons",
-    text: ""
+    text: "Recommendations can be viewed separately for each priority and for the entire project as a whole."
+  },{
+    id: "reset-buttons",
+    text: "A button that resets all parameters and mechanics"
   }
   
 ];

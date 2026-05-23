@@ -445,7 +445,7 @@ function resetAll() {
           <template #content>
             Clear all
           </template>
-          <el-button size="small" color="var(--negative-accent)" icon="Refresh" circle @click="resetAll" />
+          <el-button size="small" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" circle @click="resetAll" />
 
         </el-tooltip>
       </div>
