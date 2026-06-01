@@ -445,7 +445,8 @@ function resetAll() {
           <template #content>
             Clear all
           </template>
-          <el-button size="small" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" circle @click="resetAll" />
+          <el-button size="small" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
+            Clear all</el-button>
 
         </el-tooltip>
       </div>
@@ -460,7 +461,7 @@ function resetAll() {
       
       <div class="slider-block" data-tutorial="team-size-slider">
         <span class="demonstration">Desired number of team members</span>
-        <el-slider v-model.number="teamSize"  :min="1" :max="50" show-input />
+        <el-slider v-model.number="teamSize"  :min="1" :max="25" show-input />
       </div>
 
       <!-- Роли в команде -->

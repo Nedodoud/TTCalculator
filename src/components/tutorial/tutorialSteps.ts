@@ -18,7 +18,7 @@ export const tutorialSteps: TutorialStep[] = [
   }
   ,{
     id: "team-resize-hangle",
-    text: "This part is movable, try pulling it."
+    text: "This bar resizes team composition frame, try pulling it."
   }
   ,{
     id: "recommendation-block",

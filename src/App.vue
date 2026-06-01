@@ -136,7 +136,7 @@ onUnmounted(() => {
         class="tutorial-open-button"
         @click="startTutorial"
       >
-        ?
+        View Tutorial
       </button>
 
     <TutorialOverlay
@@ -207,25 +207,21 @@ onUnmounted(() => {
 
   left: 20px;
   top: 20px;
+  padding: 8px;
 
-  width: 48px;
-  height: 48px;
-
-  border-radius: 50%;
+  border-radius: 10%;
 
   border: none;
 
   background: var(--accent);
   color: white;
 
-  font-size: 15px;
+  font-size: 10px;
   font-weight: bold;
 
   cursor: pointer;
 
   z-index: 5000;
-  width: 27px;
-  height: 27px;
 }
 
 </style>
