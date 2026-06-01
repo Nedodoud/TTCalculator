@@ -9,9 +9,11 @@ function startTutorial() {
   emit("start");
 }
 
+/*
 function skipTutorial() {
   emit("close");
 }
+  */
 
 </script>
 
@@ -26,8 +28,10 @@ function skipTutorial() {
       </h2>
 
       <div class="tutorial-description">
+        
+        Thank you for agreeing to participate in my experiment! 
 
-        This tool helps you:
+        This tool ment to help developers to:
 
         <ul>
           <li>Plan team resources</li>
@@ -35,9 +39,11 @@ function skipTutorial() {
           <li>Analyze workload distribution</li>
           <li>Receive optimization recommendations</li>
         </ul>
-
-        Would you like to view a short tutorial?
-
+        
+        After completing the tutorial, please enter information 
+        about your real completed game development project into the app 
+        (we do not store this data) and complete a survey 
+        about your experience using the tool.
       </div>
 
       <div class="tutorial-buttons">
@@ -49,12 +55,14 @@ function skipTutorial() {
           View tutorial
         </button>
 
+        <!--
         <button
           class="tutorial-skip-button"
           @click="skipTutorial"
         >
           Skip
         </button>
+        -->
 
       </div>
 
@@ -111,6 +119,10 @@ function skipTutorial() {
 .tutorial-description ul {
   margin-top: 12px;
   margin-bottom: 18px;
+}
+
+.tutorial-description ul li{ 
+  text-align: left;
 }
 
 .tutorial-buttons {

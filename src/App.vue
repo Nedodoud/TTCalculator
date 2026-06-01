@@ -132,12 +132,22 @@ onUnmounted(() => {
         @close="closeTutorialWelcome"
       />
 
-      <button
-        class="tutorial-open-button"
-        @click="startTutorial"
-      >
-        View Tutorial
-      </button>
+      <div class="helps-buttons">
+        <button
+          class="tutorial-open-button"
+          @click="startTutorial"
+        >
+          View Tutorial
+        </button>
+        
+        <button
+          class="tutorial-open-button"
+          data-tutorial="survey-button"
+          onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
+        >
+          Take a survey
+        </button>
+      </div>
 
     <TutorialOverlay
       v-if="showTutorial"
@@ -201,13 +211,17 @@ onUnmounted(() => {
   pointer-events: none;
   z-index: 9999;
 }
-
-.tutorial-open-button {
-  position: fixed;
+.helps-buttons {
+position: fixed;
 
   left: 20px;
   top: 20px;
+  display: flex;
+}
+.tutorial-open-button {
+  
   padding: 8px;
+  margin: 4px;
 
   border-radius: 10%;
 
@@ -223,5 +237,6 @@ onUnmounted(() => {
 
   z-index: 5000;
 }
+
 
 </style>

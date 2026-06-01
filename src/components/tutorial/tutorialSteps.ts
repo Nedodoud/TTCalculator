@@ -27,9 +27,14 @@ export const tutorialSteps: TutorialStep[] = [
   ,{
     id: "recommendation-priority-buttons",
     text: "Recommendations can be viewed separately for each priority and for the entire project as a whole."
-  },{
+  }
+  ,{
     id: "reset-buttons",
     text: "A button that resets all parameters and mechanics"
+  }
+  ,{
+    id: "survey-button",
+    text: "Please take a short survey after trying out features of the app! We would be very grateful for it!"
   }
   
 ];
