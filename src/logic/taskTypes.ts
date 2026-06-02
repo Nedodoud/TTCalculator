@@ -1,14 +1,14 @@
 import type { TaskTypeConfig } from "../types";
 
 export const TASK_TYPES: Record<string, TaskTypeConfig> = {
-  "Own mechanics": {
-    name: "Own mechanicsт",
+  "Своя механика": {
+    name: "Своя механика",
     complexity: -1,
     tags: {}
   },
 
-  "Movement system": {
-    name: "Movement system",
+  "Система передвижения": {
+    name: "Система передвижения",
     complexity: 14,
     tags: {
       Engineer: { value: 2, weight: 0.6 },
@@ -16,24 +16,24 @@ export const TASK_TYPES: Record<string, TaskTypeConfig> = {
     }
   },
 
-  "Dialog system": {
-    name: "Dialog system",
+  "Система диалогов": {
+    name: "Система диалогов",
     complexity: 21,
     tags: {
       Engineer: { value: 1, weight: 0.2 },
       Art: { value: 3, weight: 0.8 }
     }
   },
-  "Enemy behavior": {
-    name: "Enemy behavior",
+  "Поведение врагов": {
+    name: "Поведение врагов",
     complexity: 30,
     tags: {
       Engineer: { value: 2, weight: 0.8 },
       Art: { value: 2, weight: 0.5}
     }
   },
-  "Narrative progression system": {
-    name: "Narrative progression system",
+  "Система нарративного прогресса": {
+    name: "Система нарративного прогресса",
     complexity: 40,
     tags: {
       Engineer: { value: 2, weight: 0.2 },
@@ -41,8 +41,8 @@ export const TASK_TYPES: Record<string, TaskTypeConfig> = {
       Writer: { value: 2, weight: 1 }
     }
   },
-  "Battle & Combo system": {
-    name: "Battle & Combo system",
+  "Бой и Система комбо": {
+    name: "Бой и Система комбо",
     complexity: 30,
     tags: {
       Engineer: { value: 2, weight: 0.7 },
@@ -67,8 +67,8 @@ export const TASK_TYPES: Record<string, TaskTypeConfig> = {
       Music: { value: 1, weight: 0.6 }
     }
   },
-  "In-run Upgrates system": {
-    name: "In-run Upgrates system",
+  "Система улучшений во время игрового процесса": {
+    name: "Система улучшений во время игрового процесса",
     complexity: 28,
     tags: {
       Engineer: { value: 1, weight: 0.8 },
@@ -76,8 +76,8 @@ export const TASK_TYPES: Record<string, TaskTypeConfig> = {
       Gamedesigner: { value: 1, weight: 0.9 }
     }
   },
-  "Meta Gameplay": {
-    name: "Meta Gameplay",
+  "Мета гейплей": {
+    name: "Мета гейплей",
     complexity: 30,
     tags: {
       Engineer: { value: 1, weight: 0.7 },

@@ -311,7 +311,7 @@ const recommendationText = computed(() => {
     if (maxUsed === 0 && available > 0) {
 
       recommendations.push(
-        `Unused resource detected: ${tag} has ${available} assigned team members, but no tasks currently use this resource.`
+        `Обнаружен неиспользуемый ресурс: ${tag} has ${available} назначены члены команды, но в настоящее время ни одна задача не использует этот ресурс.`
       );
 
     }
@@ -324,7 +324,7 @@ const recommendationText = computed(() => {
     if (maxUsed !== 0 && maxUsed < available) {
 
       recommendations.push(
-        `Underutilized resource: ${tag} uses at most ${maxUsed}/${available} available team members across priorities.`
+        `Недоиспользуемый ресурс: ${tag} использует максимум ${maxUsed}/${available} доступные члены команды по всем приоритетам.`
       );
 
     }
@@ -335,7 +335,7 @@ const recommendationText = computed(() => {
     else if (maxUsed > available) {
 
       recommendations.push(
-        `Resource overload: ${tag} requires ${maxUsed}, but only ${available} team members are available at peak priority load.`
+        `Перегрузка ресурсов: ${tag} требуется ${maxUsed}, но только ${available} членов команды доступно в часы пиковой нагрузки.`
       );
 
     }
@@ -354,13 +354,13 @@ const recommendationText = computed(() => {
 
       if (actual > recommended * 1.5 && recommended > 0) {
         recommendations.push(
-          `Task "${task.title}" has too many ${tag} resources. Efficiency may decrease.`
+          `Задача "${task.title}" имеет слишком много ${tag} ресурсов. Эффективность может падать`
         );
       }
 
       if (actual < recommended) {
         recommendations.push(
-          `Task "${task.title}" may benefit from more ${tag} resources.`
+          `Задача "${task.title}" может получить больше пользы ${tag} ресурсы.`
         );
       }
 
@@ -379,13 +379,13 @@ const recommendationText = computed(() => {
 
     if (actualTime > recommendedTime * 1.5) {
       recommendations.push(
-        `Task "${task.title}" is expected to take much longer than recommended.`
+        `Задача "${task.title}" ожидается, что это займет гораздо больше времени, чем рекомендуется.`
       );
     }
 
     if (actualTime < recommendedTime * 0.7) {
       recommendations.push(
-        `Task "${task.title}" is faster than expected. Resources might be redistributed.`
+        `Задача "${task.title}" процесс идёт быстрее, чем ожидалось. Возможно, потребуется перераспределение ресурсов.`
       );
     }
 
@@ -398,7 +398,7 @@ const recommendationText = computed(() => {
 
   if (unplannedTasks.length > 0) {
     recommendations.push(
-      `There are ${unplannedTasks.length} tasks without planned time. This reduces prediction accuracy.`
+      `Здесь есть ${unplannedTasks.length} задачи, не имеющие запланированного времени. Это снижает точность прогнозирования.`
     );
   }
 
@@ -406,7 +406,7 @@ const recommendationText = computed(() => {
   // fallback
   // =========================
   if (recommendations.length === 0) {
-    return ["Resource allocation and task distribution look balanced."];
+    return ["Распределение ресурсов и задач выглядит сбалансированным."];
   }
 
   return recommendations;
@@ -431,36 +431,36 @@ function resetAll() {
       <div class="header-block">
         <el-tooltip class="box-item" effect="dark" placement="bottom-start">
           <template #content>
-            Here you need to enter the resources available to your team for project development, namely:
+            Здесь необходимо указать ресурсы, доступные вашей команде для разработки проекта, а именно:
             <ul>
-              <li>Estimated development time</li>
-              <li>Total number of people on the team</li>
+              <li>Ориентировочное время разработки</li>
+              <li>Общее количество человек в команде</li>
             </ul>
-            Please note: the estimated development time is indicated in working days, assuming that one working day lasts 8 hours.
+            Обратите внимание: ориентировочное время разработки указано в рабочих днях, исходя из предположения, что один рабочий день длится 8 часов.
           </template>
           <el-icon :size="25" color="var(--negative-accent)" ><QuestionFilled /></el-icon>
         </el-tooltip>
-        <h2>Resourses</h2> 
+        <h2>Ресурсы</h2> 
         <el-tooltip class="box-item" effect="dark" placement="bottom-start">
           <template #content>
-            Clear all
+            Очистить всё
           </template>
           <el-button size="small" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
-            Clear all</el-button>
+            Очистить всё</el-button>
 
         </el-tooltip>
       </div>
 
       <!-- Слайдер времени -->
       <div class="slider-block">
-        <span class="demonstration"> Desired time</span>
+        <span class="demonstration"> Желаемое время</span>
         <el-slider v-model.number="time"  :min="1" :max="365" show-input />
       </div>
 
       <!-- Слайдер команды -->
       
       <div class="slider-block" data-tutorial="team-size-slider">
-        <span class="demonstration">Desired number of team members</span>
+        <span class="demonstration">Желаемое количество членов команды</span>
         <el-slider v-model.number="teamSize"  :min="1" :max="25" show-input />
       </div>
 
@@ -473,7 +473,7 @@ function resetAll() {
           class="slider-block">
 
             <span class="demonstration" >{{ comp.tag }}</span>
-            <el-slider v-model.number="comp.value"  :min="0" :max="50" show-input 
+            <el-slider v-model.number="comp.value"  :min="0" :max="25" show-input 
                 @change="onInput(comp, $event)"/>
         
           </div>
@@ -499,10 +499,10 @@ function resetAll() {
             :class="{ active: selectedPriority === 'total' }"
             @click="selectedPriority = 'total'"
           >
-            Total
+            Весь проект
           </button>
         </div>
-      <h2>Recommendations</h2>
+      <h2>Рекомендации</h2>
           <div class="recommendations">
           <!-- приоритет -->
           <div v-if="selectedPriority !== null && selectedPriority !== 'total'">
@@ -519,7 +519,7 @@ function resetAll() {
 
           <!-- ⏱ время -->
           <div class="time">
-            Estimated time required to complete all tasks of the priority #{{ selectedPriority }}: {{ priorityTime }}
+            Примерное время, необходимое для выполнения всех задач приоритетного уровня #{{ selectedPriority }}: {{ priorityTime }}
           </div>
 
           <!-- ⚠️ предупреждения -->
@@ -541,7 +541,7 @@ function resetAll() {
           <div v-else-if="selectedPriority === 'total'">
 
             <div class="time">
-              Total time: {{ totalTime }}
+              Общее время: {{ totalTime }}
             </div>
 
               <div class="recommendations">

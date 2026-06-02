@@ -24,7 +24,7 @@ function addCard() {
     tagValues: {},
     recommendedTagValues: {},
     priority: 0,
-    taskType: "Own mechanics",
+    taskType: "Своя механика",
     complexity: 2, // 👈 дефолт
     recommendedComplexity: 2
   });
@@ -47,8 +47,8 @@ defineExpose({
 <template>
 
   <div class="header-right">
-    <h2>Mechanics cards</h2>
-    <button @click="addCard" >➕ Add Card</button>
+    <h2>Механики</h2>
+    <button @click="addCard" >➕ Добавить механику</button>
       <div class="right">
         <div class="card-list">
           <CardItem

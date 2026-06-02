@@ -6,35 +6,35 @@ export interface TutorialStep {
 export const tutorialSteps: TutorialStep[] = [
   {
     id: "team-size-slider",
-    text: "Set the total number of people available in the team."
+    text: "Укажите общее количество человек, доступных команде."
   }
   ,{
     id: "team-roles",
-    text: "Distribute people between roles using these controls."
+    text: "Распределяйте людей между ролями, используя эти элементы управления."
   }
   ,{
     id: "task-card-list",
-    text: "Each card is a separate mechanic."
+    text: "Каждая карта представляет собой отдельную механику."
   }
   ,{
     id: "team-resize-hangle",
-    text: "This bar resizes team composition frame, try pulling it."
+    text: "Эта полоса изменяет размер рамки с составом команды, попробуйте потянуть за неё."
   }
   ,{
     id: "recommendation-block",
-    text: "Recommendations and warnings appear dynamically here."
+    text: "Рекомендации и предупреждения отображаются здесь динамически."
   }
   ,{
     id: "recommendation-priority-buttons",
-    text: "Recommendations can be viewed separately for each priority and for the entire project as a whole."
+    text: "Рекомендации можно просматривать отдельно для каждого приоритета, а также для всего проекта в целом."
   }
   ,{
     id: "reset-buttons",
-    text: "A button that resets all parameters and mechanics"
+    text: "Кнопка, которая сбрасывает все параметры и механики."
   }
   ,{
     id: "survey-button",
-    text: "Please take a short survey after trying out features of the app! We would be very grateful for it!"
+    text: "Пожалуйста, пройдите небольшой опрос после того, как опробуете все функции приложения! Мы будем вам очень благодарны!"
   }
   
 ];

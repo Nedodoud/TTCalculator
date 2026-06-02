@@ -46,15 +46,15 @@ function handleMouseOver(e: MouseEvent) {
   if (Number(left.slice(0, -1)) == 0){
     markValue = 1;
   }
-  var tip = "Min Value";
+  var tip = "Минимальное значение";
   if (markValue == Number(data.max)){
-    tip = "Max value";
+    tip = "Максимальное значение";
   }
   if (markValue == Number(data.recommended)){
-    tip = "Recommeded value";
+    tip = "Рекомендуемое значение";
   }
   if (markValue == Number(data.predicted)){
-    tip = "The estimated time spent based on user input and recommendations for a given task type";
+    tip = "Расчетное время, затраченное на выполнение задачи определенного типа на основе ввода данных пользователем и рекомендаций.";
   }
     
   tooltipText.value = `${tip}: ${markValue}`;
@@ -137,7 +137,7 @@ onUnmounted(() => {
           class="tutorial-open-button"
           @click="startTutorial"
         >
-          View Tutorial
+          Посмотреть руководство
         </button>
         
         <button
@@ -145,7 +145,7 @@ onUnmounted(() => {
           data-tutorial="survey-button"
           onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
         >
-          Take a survey
+          Пройти опрос
         </button>
       </div>
 

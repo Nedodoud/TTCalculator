@@ -24,26 +24,26 @@ function skipTutorial() {
     <div class="tutorial-modal">
 
       <h2 class="tutorial-title">
-        Welcome!
+        Добро пожаловать!
       </h2>
 
       <div class="tutorial-description">
         
-        Thank you for agreeing to participate in my experiment! 
+        Спасибо за согласие принять участие в моём эксперименте!
 
-        This tool ment to help developers to:
+        Этот инструмент призван помочь разработчикам игр в:
 
         <ul>
-          <li>Plan team resources</li>
-          <li>Estimate task duration</li>
-          <li>Analyze workload distribution</li>
-          <li>Receive optimization recommendations</li>
+          <li>Планирование ресурсов команды</li>
+          <li>Оценке продолжительности выполнения задачи</li> 
+          <li>Анализ распределения рабочей нагрузки</li>
+          <li>Получать рекомендации по оптимизации</li>
         </ul>
         
-        After completing the tutorial, please enter information 
-        about your real completed game development project into the app 
-        (we do not store this data) and complete a survey 
-        about your experience using the tool.
+        После завершения обучения, пожалуйста, 
+        введите в приложение информацию о вашем реальном 
+        завершенном проекте по разработке игр (мы не храним эти данные) 
+        и пройдите опрос о вашем опыте использования инструмента.
       </div>
 
       <div class="tutorial-buttons">
@@ -52,7 +52,7 @@ function skipTutorial() {
           class="tutorial-start-button"
           @click="startTutorial"
         >
-          View tutorial
+          Посмотреть руководство
         </button>
 
         <!--
