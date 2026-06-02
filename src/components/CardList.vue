@@ -14,10 +14,19 @@ const props = defineProps<{
 let nextId = 0;
 
 function addCard() {
+    let suffix = 1;
+    nextId++;
+    let title = `Карточка №${nextId}`;
+    let accId = nextId;
+
+  while (cards.value.some(card => card.title === title)) {
+    title = `${`Карточка №${nextId}`} (${suffix++})`;
+    accId += suffix;
+  }
   console.log(cards);
   cards.value.push({
-    id: nextId++,
-    title: `Card ${nextId}`,
+    id: accId,
+    title: title,
     core: false,
     planned: false,
     tags: [],
@@ -28,7 +37,6 @@ function addCard() {
     complexity: 2, // 👈 дефолт
     recommendedComplexity: 2
   });
-  emit("update:cards", cards.value);
   emit("update:cards", cards.value);
 }
 
@@ -55,6 +63,7 @@ defineExpose({
               v-for="card in cards"
               :key="card.id"
               :teamComponents="teamComponents"
+              :cards="cards"
               :card="card"
               @delete="deleteCard"
           />

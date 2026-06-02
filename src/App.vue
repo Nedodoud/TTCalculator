@@ -6,15 +6,16 @@ import TutorialOverlay from "./components/tutorial/TutorialOverlay.vue";
 import TutorialWelcomeModal from "./components/tutorial/TutorialWelcomeModal.vue";
 import type { Card } from "./types";
 
-
 // 👇 глобальное состояние команды
 const teamComponents = ref([
-  { tag: "Engineer", value: 0 , extraEffCoef: 0.2 },
-  { tag: "Art", value: 0 , extraEffCoef: 1},
-  { tag: "Music", value: 0 , extraEffCoef: 0.5},
-  { tag: "Writer", value: 0 , extraEffCoef: 0},
-  { tag: "Gamedesigner", value: 0 , extraEffCoef: 0}
+  { tag: "Разработчик", eng: "Engineer", value: 0, extraEffCoef: 0.2 },
+  { tag: "Художник", eng: "Art", value: 0, extraEffCoef: 1 },
+  { tag: "Музыкант", eng: "Music", value: 0, extraEffCoef: 0.5 },
+  { tag: "Сценарист", eng: "Writer", value: 0, extraEffCoef: 0 },
+  { tag: "Геймдизайнер", eng: "Gamedesigner", value: 0, extraEffCoef: 0 },
 ]);
+let timer: number | undefined;
+const countdown = ref(1200); // 20 минут
 
 const showTutorial = ref(false);
 const showTutorialWelcome = ref(false);
@@ -32,31 +33,32 @@ const tooltipY = ref(0);
 function handleMouseOver(e: MouseEvent) {
   const target = e.target as HTMLElement;
   if (target.classList.value != "el-slider__stop el-slider__marks-stop") return;
-  
+
   const mark = target.closest(".el-slider__marks-stop");
   const container = mark?.closest(".slider-block") as HTMLElement;
   if (!container) return;
-  
+
   // console.log("work");
 
   const data = JSON.parse(container.dataset.props || "{}");
 
   const left = target.style.left || "0%";
-  var markValue = Math.ceil((Number(left.slice(0, -1))/100) * Number(data.max));
-  if (Number(left.slice(0, -1)) == 0){
+  var markValue = Math.ceil((Number(left.slice(0, -1)) / 100) * Number(data.max));
+  if (Number(left.slice(0, -1)) == 0) {
     markValue = 1;
   }
   var tip = "Минимальное значение";
-  if (markValue == Number(data.max)){
+  if (markValue == Number(data.max)) {
     tip = "Максимальное значение";
   }
-  if (markValue == Number(data.recommended)){
+  if (markValue == Number(data.recommended)) {
     tip = "Рекомендуемое значение";
   }
-  if (markValue == Number(data.predicted)){
-    tip = "Расчетное время, затраченное на выполнение задачи определенного типа на основе ввода данных пользователем и рекомендаций.";
+  if (markValue == Number(data.predicted)) {
+    tip =
+      "Расчетное время, затраченное на выполнение задачи определенного типа на основе ввода данных пользователем и рекомендаций.";
   }
-    
+
   tooltipText.value = `${tip}: ${markValue}`;
   showTooltip.value = true;
 
@@ -75,88 +77,93 @@ function handleMouseOut(e: MouseEvent) {
 }
 
 function startTutorial() {
-
   showTutorialWelcome.value = false;
 
   showTutorial.value = true;
-
 }
 
-
 function closeTutorialWelcome() {
-
   showTutorialWelcome.value = false;
-
 }
 
 function resetAllData() {
-
   // reset team sliders
 
-  teamComponents.value.forEach(component => {
-
+  teamComponents.value.forEach((component) => {
     component.value = 0;
-
   });
 
   // remove all cards
 
-  [...cards.value].forEach(card => {
-
+  [...cards.value].forEach((card) => {
     cardListRef.value?.deleteCard(card.id);
-
   });
+}
 
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
 onMounted(() => {
-
   showTutorialWelcome.value = true;
   document.addEventListener("mouseover", handleMouseOver);
   document.addEventListener("mouseout", handleMouseOut);
+
+  timer = window.setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    }
+
+    if (countdown.value === 0 && timer) {
+      clearInterval(timer);
+    }
+  }, 1000);
 });
 
 onUnmounted(() => {
   document.removeEventListener("mouseover", handleMouseOver);
   document.removeEventListener("mouseout", handleMouseOut);
-});
 
+  if (timer) {
+    clearInterval(timer);
+  }
+});
 </script>
 
 <template>
   <div class="app">
-
-      <TutorialWelcomeModal
-        v-if="showTutorialWelcome"
-        @start="startTutorial"
-        @close="closeTutorialWelcome"
-      />
-
-      <div class="helps-buttons">
-        <button
-          class="tutorial-open-button"
-          @click="startTutorial"
-        >
-          Посмотреть руководство
-        </button>
-        
-        <button
-          class="tutorial-open-button"
-          data-tutorial="survey-button"
-          onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
-        >
-          Пройти опрос
-        </button>
-      </div>
-
-    <TutorialOverlay
-      v-if="showTutorial"
-      @close="showTutorial = false"
+    <TutorialWelcomeModal
+      v-if="showTutorialWelcome"
+      @start="startTutorial"
+      @close="closeTutorialWelcome"
     />
 
-    <div class="left">  
+    <div class="helps-buttons">
+      <button class="tutorial-open-button" @click="startTutorial"
+      data-tutorial="tutorial-button">
+        Посмотреть руководство
+      </button>
 
+      <button
+        class="tutorial-open-button"
+        :disabled="countdown > 0"
+        data-tutorial="survey-button"
+        onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
+      >
+        {{
+          countdown > 0
+            ? `Опрос будет доступен через ${formatTime(countdown)}`
+            : "Пройти опрос"
+        }}
+      </button>
+    </div>
 
+    <TutorialOverlay v-if="showTutorial" @close="showTutorial = false" />
+
+    <div class="left">
       <SliderGroup
         v-model:components="teamComponents"
         @reset-all="resetAllData"
@@ -164,18 +171,19 @@ onUnmounted(() => {
       />
     </div>
 
-      <CardList
-          ref="cardListRef"
-          :teamComponents="teamComponents"
-          v-model:cards="cards"
-          data-tutorial="task-card-list"
-        />
+    <CardList
+      ref="cardListRef"
+      :teamComponents="teamComponents"
+      v-model:cards="cards"
+      data-tutorial="task-card-list"
+    />
 
-    <div v-if="showTooltip" 
-        class="tooltip"
-        :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
-        >
-        {{ tooltipText }}
+    <div
+      v-if="showTooltip"
+      class="tooltip"
+      :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
+    >
+      {{ tooltipText }}
     </div>
   </div>
 </template>
@@ -200,7 +208,6 @@ onUnmounted(() => {
 
 /* Правая часть (1/3) */
 
-
 .tooltip {
   position: fixed;
   background: black;
@@ -212,14 +219,13 @@ onUnmounted(() => {
   z-index: 9999;
 }
 .helps-buttons {
-position: fixed;
+  position: fixed;
 
   left: 20px;
   top: 20px;
   display: flex;
 }
 .tutorial-open-button {
-  
   padding: 8px;
   margin: 4px;
 
@@ -237,6 +243,7 @@ position: fixed;
 
   z-index: 5000;
 }
-
-
+.tutorial-open-button:disabled {
+  background: var(--disabled-accent);
+}
 </style>

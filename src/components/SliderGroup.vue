@@ -466,7 +466,7 @@ function resetAll() {
 
       <!-- Роли в команде -->
       <div class="top" data-tutorial="team-roles">
-        <h2>Roles</h2>
+        <h2>Роли</h2>
 
         <div v-for="comp in props.components" 
           :key="comp.tag"

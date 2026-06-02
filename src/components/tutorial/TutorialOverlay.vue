@@ -210,7 +210,7 @@ onUnmounted(() => {
       :style="tooltipStyle"
     >
       <div class="tutorial-step-counter">
-        Step {{ currentStepIndex + 1 }}
+        Шаг {{ currentStepIndex + 1 }}
         /
         {{ tutorialSteps.length }}
       </div>

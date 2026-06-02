@@ -7,6 +7,7 @@ import SmartSlider from "./SmartSlider.vue";
 
 const props = defineProps<{
   teamComponents: { tag: string; value: number }[];
+  cards : Card[];
   card: Card;
 }>();
 
@@ -172,6 +173,14 @@ function applyTaskType(typeName: string) {
   props.card.taskType = typeName;
   props.card.planned = true;
 
+  let suffix = 1;
+  let title = props.card.taskType;
+
+  while (props.cards.some(card => card.title === title)) {
+    title = `${props.card.taskType} (${suffix++})`;
+  }
+  props.card.title = title;
+
   // сброс
   props.card.tags = [];
   
@@ -179,7 +188,7 @@ function applyTaskType(typeName: string) {
   props.card.tagValues = {};
 
   // применяем
-  if (props.card.taskType != "Own mechanics")
+  if (props.card.taskType != "Своя механика")
     {props.card.complexity = config.complexity;}
 
   Object.entries(config.tags).forEach(([tag, value]) => {
@@ -200,8 +209,8 @@ const missingRecommendedTags = computed(() =>
 
 const complexityLabel = computed(() =>
   props.card.planned
-    ? "Estimation of time costs (working days)"
-    : "Difficulty rating"
+    ? "Оценка времязатрат задачи(в рабочих днях)"
+    : "Оценка сложноти задачи"
 );
 
 // диапазон
@@ -286,7 +295,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
       <!-- LEFT -->
       <div class="left">
         <div class="priority">
-              <label>Priority:</label>
+              <label>Приоритет:</label>
               <el-input-number 
                 v-model.number="card.priority"
                 :min="1" />
@@ -300,13 +309,13 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 
         <label>
           <input type="checkbox" v-model="card.planned" />
-          Planned time
+            Оценка времязатрат
         </label>
         <div class="task-type">
-            <label>Mechanic type:</label>
+            <label>Тип механики:</label>
             
                <el-select v-model="card.taskType" 
-                          placeholder="Own mechanics" 
+                          placeholder="Своя механика" 
                           @change="applyTaskType(card.taskType)">
                   <el-option
                     v-for="(_, name) in TASK_TYPES"
@@ -326,7 +335,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
         <!-- TAGS -->
         <div class="tags-section">
           <button @click="showTagSelector = !showTagSelector">
-            ➕ Add Role
+            ➕ Добавить роль
           </button>
 
           <!-- список выбора -->
