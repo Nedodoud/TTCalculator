@@ -209,7 +209,7 @@ const missingRecommendedTags = computed(() =>
 
 const complexityLabel = computed(() =>
   props.card.planned
-    ? "Оценка времязатрат задачи(в рабочих днях)"
+    ? "Оценка времязатрат задачи (в рабочих днях)"
     : "Оценка сложности задачи"
 );
 
@@ -311,7 +311,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 
         <label>
           <input type="checkbox" v-model="card.planned" />
-            Оценка времязатрат
+            Оценка в рабочих днях
         </label>
         <div class="task-type">
             <label>Тип механики:</label>
