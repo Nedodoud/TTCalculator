@@ -226,7 +226,7 @@ onUnmounted(() => {
           @click.stop="prevStep"
           :disabled="currentStepIndex === 0"
         >
-          Previous
+          Предыдущий шаг
         </button>
 
         <button
@@ -235,8 +235,8 @@ onUnmounted(() => {
         >
           {{
             currentStepIndex === tutorialSteps.length - 1
-              ? "Finish"
-              : "Next"
+              ? "Закончить"
+              : "Следующий шаг"
           }}
         </button>
 
