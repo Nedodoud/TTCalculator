@@ -5,6 +5,7 @@ import PieChart from "./PieChart.vue";
 // основные параметры
 const time = ref<number>(50);
 const teamSize = ref<number>(5);
+const maxTeamSize = 25;
 
 const topHeight = ref(400); // начальная высота в px
 const isResizing = ref(false);
@@ -57,11 +58,19 @@ const tagSums = computed(() => {
 
   // @ts-expect-error unknown external type
 function onInput(comp: Component, e: any) {
+
+  const newVal = e;
+  const currentSumWithoutThis = totalComponents.value - comp.value;
+  console.log(newVal, comp.value, currentSumWithoutThis);
+
+  // не даём выйти за предел
+  const maxAllowed = maxTeamSize - currentSumWithoutThis;
+  const finalValue = Math.min(newVal, maxAllowed);
+
   // повышаем предел
   const updated = totalComponents.value;
   teamSize.value = updated;
-
-  updateComponent(comp.tag, e);
+  updateComponent(comp.tag, finalValue);
   emit("update:teamSize", updated);
   
 }

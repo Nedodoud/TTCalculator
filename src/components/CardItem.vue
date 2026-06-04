@@ -210,7 +210,7 @@ const missingRecommendedTags = computed(() =>
 const complexityLabel = computed(() =>
   props.card.planned
     ? "Оценка времязатрат задачи(в рабочих днях)"
-    : "Оценка сложноти задачи"
+    : "Оценка сложности задачи"
 );
 
 // диапазон
@@ -297,6 +297,8 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
         <div class="priority">
               <label>Приоритет:</label>
               <el-input-number 
+                :max="20"
+                :value-on-clear="1"
                 v-model.number="card.priority"
                 :min="1" />
 
@@ -314,7 +316,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
         <div class="task-type">
             <label>Тип механики:</label>
             
-               <el-select v-model="card.taskType" 
+               <el-select class="in-task-type" v-model="card.taskType" 
                           placeholder="Своя механика" 
                           @change="applyTaskType(card.taskType)">
                   <el-option
@@ -326,7 +328,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
                 </div>
 
         <div v-if="missingRecommendedTags.length > 0" class="recommended-tags">
-                    Recommended tags:
+                    Рекомендованные теги:
                     <span v-for="tag in missingRecommendedTags" :key="tag">
                         {{ tag }}
                     </span>
@@ -498,9 +500,12 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
   flex-direction: column;
   align-items: flex-start; /* 👈 ключ */
   gap: 10px;
+  width: 90%;
 }
+
+
 .task-type select {
-  width: 80%;
+  width: 90%;
   align-items: center;
   gap: 6px;
 }
@@ -612,7 +617,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 }
 
 .tags-section {
-  width: 100%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* 👈 ключ */
@@ -621,7 +626,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 
 
 .tags-section button {
-  width: 80%;
+  width: 100%;
   align-items: center;
   gap: 6px;
   

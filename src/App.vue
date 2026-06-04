@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import SliderGroup from "./components/SliderGroup.vue";
+import SurveyModal from "./components/SurveyModal.vue";
 import CardList from "./components/CardList.vue";
 import TutorialOverlay from "./components/tutorial/TutorialOverlay.vue";
 import TutorialWelcomeModal from "./components/tutorial/TutorialWelcomeModal.vue";
@@ -15,7 +16,7 @@ const teamComponents = ref([
   { tag: "Геймдизайнер", eng: "Gamedesigner", value: 0, extraEffCoef: 0 },
 ]);
 let timer: number | undefined;
-const countdown = ref(1200); // 20 минут
+const countdown = ref(1800); // 10 минут
 
 const showTutorial = ref(false);
 const showTutorialWelcome = ref(false);
@@ -140,25 +141,37 @@ onUnmounted(() => {
       @start="startTutorial"
       @close="closeTutorialWelcome"
     />
+    
+    <SurveyModal
+    />
 
     <div class="helps-buttons">
-      <button class="tutorial-open-button" @click="startTutorial"
-      data-tutorial="tutorial-button">
-        Посмотреть руководство
-      </button>
-
       <button
         class="tutorial-open-button"
-        :disabled="countdown > 0"
-        data-tutorial="survey-button"
-        onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
+        @click="startTutorial"
+        data-tutorial="tutorial-button"
       >
-        {{
-          countdown > 0
-            ? `Опрос будет доступен через ${formatTime(countdown)}`
-            : "Пройти опрос"
-        }}
+        Посмотреть руководство
       </button>
+      
+      <el-tooltip class="box-item" effect="dark" placement="bottom-start">
+          <template #content>
+          Мы ограничили время тестирования приложения для унификации опыта респондентов. 
+          <br>Пройти опрос можно минимум через 10 минут и максимум через 30 минут пользования приложением
+          </template>
+          <button
+            class="tutorial-open-button"
+            :disabled="countdown > 1200"
+            data-tutorial="survey-button"
+            onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
+          >
+            {{
+              countdown > 1200
+                ? `Опрос будет доступен через ${formatTime(countdown-1200)}`
+                : `Пройдите опрос до ${formatTime(countdown)}`
+            }}
+          </button>
+      </el-tooltip>
     </div>
 
     <TutorialOverlay v-if="showTutorial" @close="showTutorial = false" />
@@ -210,8 +223,8 @@ onUnmounted(() => {
 
 .tooltip {
   position: fixed;
-  background: black;
-  color: white;
+  background: var(--code-bg);
+  color: var(--tooltip-text);
   padding: 4px 8px;
   font-size: 12px;
   border-radius: 4px;
@@ -225,16 +238,17 @@ onUnmounted(() => {
   top: 20px;
   display: flex;
 }
+
 .tutorial-open-button {
   padding: 8px;
   margin: 4px;
 
-  border-radius: 10%;
+  border-radius: 4px;
 
   border: none;
 
   background: var(--accent);
-  color: white;
+  color: var(--tooltip-text);
 
   font-size: 10px;
   font-weight: bold;
