@@ -6,7 +6,7 @@ export interface TutorialStep {
 export const tutorialSteps: TutorialStep[] = [
   {
     id: "team-size-slider",
-    text: "Укажите общее количество человек, доступных команде."
+    text: "Укажите общее количество человек в команде."
   }
   ,{
     id: "team-roles",
@@ -18,7 +18,7 @@ export const tutorialSteps: TutorialStep[] = [
   }
   ,{
     id: "team-resize-hangle",
-    text: "Эта полоса изменяет размер рамки с составом команды, попробуйте потянуть за неё."
+    text: "Эта полоса изменяет размер рамки с составом команды."
   }
   ,{
     id: "recommendation-block",
