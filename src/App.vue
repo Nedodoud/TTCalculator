@@ -145,38 +145,39 @@ onUnmounted(() => {
     <SurveyModal
     />
 
-    <div class="helps-buttons">
-      <button
-        class="tutorial-open-button"
-        @click="startTutorial"
-        data-tutorial="tutorial-button"
-      >
-        Посмотреть руководство
-      </button>
-      
-      <el-tooltip class="box-item" effect="dark" placement="bottom-start">
-          <template #content>
-          Мы ограничили время тестирования приложения для унификации опыта респондентов. 
-          <br>Пройти опрос можно минимум через 10 минут и максимум через 30 минут пользования приложением
-          </template>
-          <button
-            class="tutorial-open-button"
-            :disabled="countdown > 1200"
-            data-tutorial="survey-button"
-            onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
-          >
-            {{
-              countdown > 1200
-                ? `Опрос будет доступен через ${formatTime(countdown-1200)}`
-                : `Пройдите опрос до ${formatTime(countdown)}`
-            }}
-          </button>
-      </el-tooltip>
-    </div>
-
+    
     <TutorialOverlay v-if="showTutorial" @close="showTutorial = false" />
 
     <div class="left">
+        <div class="helps-buttons">
+        <button
+          class="tutorial-open-button"
+          @click="startTutorial"
+          data-tutorial="tutorial-button"
+        >
+          Посмотреть руководство
+        </button>
+        
+        <el-tooltip class="box-item" effect="dark" placement="bottom-start">
+            <template #content>
+            Мы ограничили время тестирования приложения для унификации опыта респондентов. 
+            <br>Пройти опрос можно минимум через 10 минут и максимум через 30 минут пользования приложением
+            </template>
+            <button
+              class="tutorial-open-button"
+              :disabled="countdown > 1200"
+              data-tutorial="survey-button"
+              onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
+            >
+              {{
+                countdown > 1200
+                  ? `Опрос будет доступен через ${formatTime(countdown-1200)}`
+                  : `Пройдите опрос до ${formatTime(countdown)}`
+              }}
+            </button>
+        </el-tooltip>
+      </div>
+
       <SliderGroup
         v-model:components="teamComponents"
         @reset-all="resetAllData"
@@ -217,6 +218,12 @@ onUnmounted(() => {
 .left {
   flex: 2;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.left .container {
+width: 100%;
 }
 
 /* Правая часть (1/3) */
@@ -232,17 +239,12 @@ onUnmounted(() => {
   z-index: 9999;
 }
 .helps-buttons {
-  position: fixed;
-
-  left: 20px;
-  top: 20px;
   display: flex;
 }
 
 .tutorial-open-button {
   padding: 8px;
   margin: 4px;
-
   border-radius: 4px;
 
   border: none;
@@ -250,7 +252,7 @@ onUnmounted(() => {
   background: var(--accent);
   color: var(--tooltip-text);
 
-  font-size: 10px;
+  font-size: 14px;
   font-weight: bold;
 
   cursor: pointer;
