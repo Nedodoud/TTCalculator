@@ -179,7 +179,7 @@ const recommendationText = computed(() => {
   const allCards = props.cards;
 
   if (allCards.length === 0) {
-    return ["No tasks available for analysis."];
+    return ["Для анализа нет доступных задач."];
   }
 
   // =========================
@@ -192,7 +192,7 @@ const recommendationText = computed(() => {
       : props.cards.filter(c => c.priority === selectedPriority.value);;
 
   if (tasks.length === 0) {
-    return ["No tasks for selected priority."];
+    return ["Задач по выбранному приоритету нет."];
   }
 
   const recommendations: string[] = [];
@@ -209,7 +209,7 @@ const recommendationText = computed(() => {
 
   if (maxTask.complexity > avgTime * 1.5) {
     recommendations.push(
-      `Task "${maxTask.title}" dominates the timeline. Optimizing it will have the biggest impact.`
+      `Задача "${maxTask.title}" занимает доминирующее положение во временной шкале. Оптимизация окажет наибольшее влияние.`
     );
   }
 
@@ -220,7 +220,7 @@ const recommendationText = computed(() => {
     const acComplexity = task.planned ? task.complexity : task.complexity * 7; 
     if (acComplexity < avgTime * 0.5) {
       recommendations.push(
-        `Task "${task.title}" is much shorter than others. Consider reallocating resources.`
+        `Задача "${task.title}" гораздо короче других. Рассмотрите возможность перераспределения ресурсов.`
       );
     }
   });
@@ -320,7 +320,7 @@ const recommendationText = computed(() => {
     if (maxUsed === 0 && available > 0) {
 
       recommendations.push(
-        `Обнаружен неиспользуемый ресурс: ${tag} has ${available} назначены члены команды, но в настоящее время ни одна задача не использует этот ресурс.`
+        `Обнаружен неиспользуемый ресурс: "${tag}" ${available} назначен/ы в члены команды, но в настоящее время ни одна задача не использует этот ресурс.`
       );
 
     }
@@ -333,7 +333,7 @@ const recommendationText = computed(() => {
     if (maxUsed !== 0 && maxUsed < available) {
 
       recommendations.push(
-        `Недоиспользуемый ресурс: ${tag} использует максимум ${maxUsed}/${available} доступные члены команды по всем приоритетам.`
+      `Недоиспользуемый ресурс: "${tag}" используется максимум ${maxUsed}/${available} из доступных членов команды по всем приоритетам.`
       );
 
     }
@@ -363,13 +363,13 @@ const recommendationText = computed(() => {
 
       if (actual > recommended * 1.5 && recommended > 0) {
         recommendations.push(
-          `Задача "${task.title}" имеет слишком много ${tag} ресурсов. Эффективность может падать`
+          `Задача "${task.title}" имеет слишком много "${tag}" ресурсов. Эффективность может падать`
         );
       }
 
       if (actual < recommended) {
         recommendations.push(
-          `Задача "${task.title}" может получить больше пользы ${tag} ресурсы.`
+          `Задача "${task.title}" может получить больше пользы, если использовать "${tag}" в ней.`
         );
       }
 
@@ -407,7 +407,7 @@ const recommendationText = computed(() => {
 
   if (unplannedTasks.length > 0) {
     recommendations.push(
-      `Здесь есть ${unplannedTasks.length} задачи, не имеющие запланированного времени. Это снижает точность прогнозирования.`
+      `Здесь есть ${unplannedTasks.length} задачи, не имеющие оценки времени в днях. Это снижает точность прогнозирования.`
     );
   }
 
@@ -442,10 +442,9 @@ function resetAll() {
           <template #content>
             Здесь необходимо указать ресурсы, доступные вашей команде для разработки проекта, а именно:
             <ul>
-              <li>Ориентировочное время разработки</li>
+              <li>Ориентировочное время разработки в рабочих днях(8 часов в сутки)</li>
               <li>Общее количество человек в команде</li>
             </ul>
-            Обратите внимание: ориентировочное время разработки указано в рабочих днях, исходя из предположения, что один рабочий день длится 8 часов.
           </template>
           <el-icon :size="25" color="var(--negative-accent)" ><QuestionFilled /></el-icon>
         </el-tooltip>
@@ -454,7 +453,7 @@ function resetAll() {
           <template #content>
             Очистить всё
           </template>
-          <el-button size="small" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
+          <el-button class="clear-button" size="default" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
             Очистить всё</el-button>
 
         </el-tooltip>
@@ -745,5 +744,14 @@ button:disabled {
 
 .tag-sum-container {
   display: flex;
+}
+.clear-button 
+{
+  border-radius: 4px; 
+  background: var(--accent);
+  color: var(--tooltip-text);
+  
+  font-weight: bold;
+  border: none;
 }
 </style>
