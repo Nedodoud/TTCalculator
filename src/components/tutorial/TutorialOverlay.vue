@@ -333,7 +333,7 @@ onUnmounted(() => {
 .tutorial-button {
   border: none;
 
-  background: #ffffff;
+  background: var(--accent);
   color: white;
 
   border-radius: 8px;
@@ -346,11 +346,11 @@ onUnmounted(() => {
 }
 
 .tutorial-button:hover {
-  background: var(--accent);
+  background: var(--accent-border);
 }
 
 .tutorial-button:disabled {
-  background: #ffffff;
+  background: var(--disabled-accent);
   cursor: default;
 }
 

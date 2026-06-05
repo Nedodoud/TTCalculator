@@ -209,7 +209,7 @@ const recommendationText = computed(() => {
 
   if (maxTask.complexity > avgTime * 1.5) {
     recommendations.push(
-      `Задача "${maxTask.title}" занимает доминирующее положение во временной шкале. Оптимизация окажет наибольшее влияние.`
+      `Задача "${maxTask.title}": занимает доминирующее положение во временной шкале. Оптимизация окажет наибольшее влияние.`
     );
   }
 
@@ -220,7 +220,7 @@ const recommendationText = computed(() => {
     const acComplexity = task.planned ? task.complexity : task.complexity * 7; 
     if (acComplexity < avgTime * 0.5) {
       recommendations.push(
-        `Задача "${task.title}" гораздо короче других. Рассмотрите возможность перераспределения ресурсов.`
+        `Задача "${task.title}": гораздо короче других. Рассмотрите возможность перераспределения ресурсов.`
       );
     }
   });
@@ -363,13 +363,13 @@ const recommendationText = computed(() => {
 
       if (actual > recommended * 1.5 && recommended > 0) {
         recommendations.push(
-          `Задача "${task.title}" имеет слишком много "${tag}" ресурсов. Эффективность может падать`
+          `Задача "${task.title}": имеет слишком много "${tag}" ресурсов. Эффективность может падать`
         );
       }
 
       if (actual < recommended) {
         recommendations.push(
-          `Задача "${task.title}" может получить больше пользы, если использовать "${tag}" в ней.`
+          `Задача "${task.title}": может получить больше пользы, если использовать "${tag}" в ней.`
         );
       }
 
@@ -388,13 +388,13 @@ const recommendationText = computed(() => {
 
     if (actualTime > recommendedTime * 1.5) {
       recommendations.push(
-        `Задача "${task.title}" ожидается, что это займет гораздо больше времени, чем рекомендуется.`
+        `Задача "${task.title}": ожидается, что это займет гораздо больше времени, чем рекомендуется.`
       );
     }
 
     if (actualTime < recommendedTime * 0.7) {
       recommendations.push(
-        `Задача "${task.title}" процесс идёт быстрее, чем ожидалось. Возможно, потребуется перераспределение ресурсов.`
+        `Задача "${task.title}": процесс идёт быстрее, чем ожидалось. Возможно, потребуется перераспределение ресурсов.`
       );
     }
 
@@ -428,6 +428,16 @@ function resetAll() {
   emit("reset-all");
 }
 
+function onTeamSizeInput(e: any) {
+
+  const newVal = e;
+  const finalValue = Math.max(newVal, totalComponents.value);
+  
+  teamSize.value = finalValue;
+  console.log(newVal, totalComponents.value);
+  emit("update:teamSize", finalValue);
+  
+}
 
 </script>
 
@@ -442,7 +452,7 @@ function resetAll() {
           <template #content>
             Здесь необходимо указать ресурсы, доступные вашей команде для разработки проекта, а именно:
             <ul>
-              <li>Ориентировочное время разработки в рабочих днях(8 часов в сутки)</li>
+              <li>Ориентировочное время разработки в рабочих днях (8 часов в сутки)</li>
               <li>Общее количество человек в команде</li>
             </ul>
           </template>
@@ -468,8 +478,9 @@ function resetAll() {
       <!-- Слайдер команды -->
       
       <div class="slider-block" data-tutorial="team-size-slider">
-        <span class="demonstration">Желаемое количество членов команды</span>
-        <el-slider v-model.number="teamSize"  :min="1" :max="25" show-input />
+        <span style="display: inline-block; line-height: 1.0;" class="demonstration">Желаемое количество <br>членов команды</span>
+        <el-slider v-model.number="teamSize"  :min="1" :max="25" show-input 
+        @change="onTeamSizeInput($event)"/>
       </div>
 
       <!-- Роли в команде -->
@@ -538,7 +549,7 @@ function resetAll() {
           </div>
              <div class="recommendations">
                 <ul>
-                  <li v-for="(rec, index) in recommendationText" :key="index">
+                  <li class="recommendation-list-item" v-for="(rec, index) in recommendationText" :key="index">
                     {{ rec }}
                   </li>
                 </ul>
@@ -554,7 +565,7 @@ function resetAll() {
 
               <div class="recommendations">
                 <ul>
-                  <li v-for="(rec, index) in recommendationText" :key="index">
+                  <li class="recommendation-list-item" v-for="(rec, index) in recommendationText" :key="index">
                     {{ rec }}
                   </li>
                 </ul>
@@ -566,6 +577,7 @@ function resetAll() {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .container {
@@ -725,10 +737,16 @@ button:disabled {
   align-items: left;
 }
 
-.recommendations li{
-  display: flex;
+.recommendation-list-item {
   align-items: left;
+  text-align: left;
 }
+
+.recommendation-list-item::marker {
+  color: var(--accent);
+  font-size: 1.2em;
+}
+
 
 .tag-sum-container-list {
   width: 30%;
