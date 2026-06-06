@@ -76,8 +76,8 @@ export const TASK_TYPES: Record<string, TaskTypeConfig> = {
       "Геймдизайнер": { value: 1, weight: 0.9 }
     }
   },
-  "Мета гейплей": {
-    name: "Мета гейплей",
+  "Мета геймлей": {
+    name: "Мета геймплей",
     complexity: 30,
     tags: {
       "Разработчик": { value: 1, weight: 0.7 },
