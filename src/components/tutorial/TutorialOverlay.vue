@@ -235,7 +235,7 @@ onUnmounted(() => {
         >
           {{
             currentStepIndex === tutorialSteps.length - 1
-              ? "Закончить"
+              ? "Завершить"
               : "Следующий шаг"
           }}
         </button>
