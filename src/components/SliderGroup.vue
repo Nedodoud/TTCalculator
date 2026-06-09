@@ -137,7 +137,7 @@ const resourceWarnings = computed(() => {
 
     if (value > team.value) {
       warnings.push(
-        `${tag}: required ${value}, but you have only ${team.value}`
+        `${tag}: требуется в количестве ${value}, но у вас есть только ${team.value}`
       );
     }
   });
