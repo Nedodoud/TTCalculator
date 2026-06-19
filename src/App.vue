@@ -157,7 +157,7 @@ onUnmounted(() => {
         >
           Посмотреть руководство
         </button>
-        
+        <!--
         <el-tooltip class="box-item" effect="dark" placement="bottom-start">
             <template #content>
             Мы ограничили время тестирования приложения для унификации опыта респондентов. 
@@ -176,6 +176,7 @@ onUnmounted(() => {
               }}
             </button>
         </el-tooltip>
+        -->
       </div>
 
       <SliderGroup
