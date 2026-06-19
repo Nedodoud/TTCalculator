@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import SliderGroup from "./components/SliderGroup.vue";
+import SurveyModal from "./components/SurveyModal.vue";
 import CardList from "./components/CardList.vue";
 import TutorialOverlay from "./components/tutorial/TutorialOverlay.vue";
 import TutorialWelcomeModal from "./components/tutorial/TutorialWelcomeModal.vue";
 import type { Card } from "./types";
 
-
 // 👇 глобальное состояние команды
 const teamComponents = ref([
-  { tag: "Engineer", value: 0 , extraEffCoef: 0.2 },
-  { tag: "Art", value: 0 , extraEffCoef: 1},
-  { tag: "Music", value: 0 , extraEffCoef: 0.5},
-  { tag: "Writer", value: 0 , extraEffCoef: 0},
-  { tag: "Gamedesigner", value: 0 , extraEffCoef: 0}
+  { tag: "Разработчик", eng: "Engineer", value: 0, extraEffCoef: 0.2 },
+  { tag: "Художник", eng: "Art", value: 0, extraEffCoef: 1 },
+  { tag: "Музыкант", eng: "Music", value: 0, extraEffCoef: 0.5 },
+  { tag: "Сценарист", eng: "Writer", value: 0, extraEffCoef: 0 },
+  { tag: "Геймдизайнер", eng: "Gamedesigner", value: 0, extraEffCoef: 0 },
 ]);
+let timer: number | undefined;
+const countdown = ref(1800); // 10 минут
 
 const showTutorial = ref(false);
 const showTutorialWelcome = ref(false);
@@ -32,31 +34,32 @@ const tooltipY = ref(0);
 function handleMouseOver(e: MouseEvent) {
   const target = e.target as HTMLElement;
   if (target.classList.value != "el-slider__stop el-slider__marks-stop") return;
-  
+
   const mark = target.closest(".el-slider__marks-stop");
   const container = mark?.closest(".slider-block") as HTMLElement;
   if (!container) return;
-  
+
   // console.log("work");
 
   const data = JSON.parse(container.dataset.props || "{}");
 
   const left = target.style.left || "0%";
-  var markValue = Math.ceil((Number(left.slice(0, -1))/100) * Number(data.max));
-  if (Number(left.slice(0, -1)) == 0){
+  var markValue = Math.ceil((Number(left.slice(0, -1)) / 100) * Number(data.max));
+  if (Number(left.slice(0, -1)) == 0) {
     markValue = 1;
   }
-  var tip = "Min Value";
-  if (markValue == Number(data.max)){
-    tip = "Max value";
+  var tip = "Минимальное значение";
+  if (markValue == Number(data.max)) {
+    tip = "Максимальное значение";
   }
-  if (markValue == Number(data.recommended)){
-    tip = "Recommeded value";
+  if (markValue == Number(data.recommended)) {
+    tip = "Рекомендуемое значение";
   }
-  if (markValue == Number(data.predicted)){
-    tip = "The estimated time spent based on user input and recommendations for a given task type";
+  if (markValue == Number(data.predicted)) {
+    tip =
+      "Расчетное время, затраченное на выполнение задачи определенного типа на основе ввода данных пользователем и рекомендаций";
   }
-    
+
   tooltipText.value = `${tip}: ${markValue}`;
   showTooltip.value = true;
 
@@ -75,77 +78,107 @@ function handleMouseOut(e: MouseEvent) {
 }
 
 function startTutorial() {
-
   showTutorialWelcome.value = false;
 
   showTutorial.value = true;
-
 }
 
-
 function closeTutorialWelcome() {
-
   showTutorialWelcome.value = false;
-
 }
 
 function resetAllData() {
-
   // reset team sliders
 
-  teamComponents.value.forEach(component => {
-
+  teamComponents.value.forEach((component) => {
     component.value = 0;
-
   });
 
   // remove all cards
 
-  [...cards.value].forEach(card => {
-
+  [...cards.value].forEach((card) => {
     cardListRef.value?.deleteCard(card.id);
-
   });
-
 }
 
-onMounted(() => {
+/*
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
 
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}*/
+
+onMounted(() => {
   showTutorialWelcome.value = true;
   document.addEventListener("mouseover", handleMouseOver);
   document.addEventListener("mouseout", handleMouseOut);
+
+  timer = window.setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    }
+
+    if (countdown.value === 0 && timer) {
+      clearInterval(timer);
+    }
+  }, 1000);
 });
 
 onUnmounted(() => {
   document.removeEventListener("mouseover", handleMouseOver);
   document.removeEventListener("mouseout", handleMouseOut);
-});
 
+  if (timer) {
+    clearInterval(timer);
+  }
+});
 </script>
 
 <template>
   <div class="app">
-
-      <TutorialWelcomeModal
-        v-if="showTutorialWelcome"
-        @start="startTutorial"
-        @close="closeTutorialWelcome"
-      />
-
-      <button
-        class="tutorial-open-button"
-        @click="startTutorial"
-      >
-        View Tutorial
-      </button>
-
-    <TutorialOverlay
-      v-if="showTutorial"
-      @close="showTutorial = false"
+    <TutorialWelcomeModal
+      v-if="showTutorialWelcome"
+      @start="startTutorial"
+      @close="closeTutorialWelcome"
+    />
+    
+    <SurveyModal
     />
 
-    <div class="left">  
+    
+    <TutorialOverlay v-if="showTutorial" @close="showTutorial = false" />
 
+    <div class="left">
+        <div class="helps-buttons">
+        <button
+          class="tutorial-open-button"
+          @click="startTutorial"
+          data-tutorial="tutorial-button"
+        >
+          Посмотреть руководство
+        </button>
+        <!--
+        <el-tooltip class="box-item" effect="dark" placement="bottom-start">
+            <template #content>
+            Мы ограничили время тестирования приложения для унификации опыта респондентов. 
+            <br>Пройти опрос можно минимум через 10 минут и максимум через 30 минут пользования приложением
+            </template>
+            <button
+              class="tutorial-open-button"
+              :disabled="countdown > 1200"
+              data-tutorial="survey-button"
+              onclick="window.location.href='https://forms.gle/pFZRZLbwSdQJCCgx9';"
+            >
+              {{
+                countdown > 1200
+                  ? `Опрос будет доступен через ${formatTime(countdown-1200)}`
+                  : `Пройдите опрос до ${formatTime(countdown)}`
+              }}
+            </button>
+        </el-tooltip>
+        -->
+      </div>
 
       <SliderGroup
         v-model:components="teamComponents"
@@ -154,18 +187,19 @@ onUnmounted(() => {
       />
     </div>
 
-      <CardList
-          ref="cardListRef"
-          :teamComponents="teamComponents"
-          v-model:cards="cards"
-          data-tutorial="task-card-list"
-        />
+    <CardList
+      ref="cardListRef"
+      :teamComponents="teamComponents"
+      v-model:cards="cards"
+      data-tutorial="task-card-list"
+    />
 
-    <div v-if="showTooltip" 
-        class="tooltip"
-        :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
-        >
-        {{ tooltipText }}
+    <div
+      v-if="showTooltip"
+      class="tooltip"
+      :style="{ left: tooltipX + 'px', top: tooltipY + 'px' }"
+    >
+      {{ tooltipText }}
     </div>
   </div>
 </template>
@@ -186,42 +220,48 @@ onUnmounted(() => {
 .left {
   flex: 2;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.left .container {
+width: 100%;
 }
 
 /* Правая часть (1/3) */
 
-
 .tooltip {
   position: fixed;
-  background: black;
-  color: white;
+  background: var(--code-bg);
+  color: var(--tooltip-text);
   padding: 4px 8px;
   font-size: 12px;
   border-radius: 4px;
   pointer-events: none;
   z-index: 9999;
 }
+.helps-buttons {
+  display: flex;
+}
 
 .tutorial-open-button {
-  position: fixed;
-
-  left: 20px;
-  top: 20px;
   padding: 8px;
-
-  border-radius: 10%;
+  margin: 4px;
+  border-radius: 4px;
 
   border: none;
 
   background: var(--accent);
-  color: white;
+  color: var(--tooltip-text);
 
-  font-size: 10px;
+  font-size: 14px;
   font-weight: bold;
 
   cursor: pointer;
 
   z-index: 5000;
 }
-
+.tutorial-open-button:disabled {
+  background: var(--disabled-accent);
+}
 </style>

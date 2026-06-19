@@ -9,9 +9,11 @@ function startTutorial() {
   emit("start");
 }
 
+/*
 function skipTutorial() {
   emit("close");
 }
+  */
 
 </script>
 
@@ -22,22 +24,21 @@ function skipTutorial() {
     <div class="tutorial-modal">
 
       <h2 class="tutorial-title">
-        Welcome!
+        Добро пожаловать!
       </h2>
 
       <div class="tutorial-description">
+        
+        Спасибо за согласие принять участие в моём эксперименте!
 
-        This tool helps you:
+        Этот инструмент призван помочь разработчикам игр до начала разработки в:
 
         <ul>
-          <li>Plan team resources</li>
-          <li>Estimate task duration</li>
-          <li>Analyze workload distribution</li>
-          <li>Receive optimization recommendations</li>
+          <li>Планировании ресурсов команды</li>
+          <li>Оценке продолжительности выполнения задачи</li> 
+          <li>Анализе рабочей нагрузки</li>
+          <li>Получении рекомендаций по оптимизации</li>
         </ul>
-
-        Would you like to view a short tutorial?
-
       </div>
 
       <div class="tutorial-buttons">
@@ -46,15 +47,17 @@ function skipTutorial() {
           class="tutorial-start-button"
           @click="startTutorial"
         >
-          View tutorial
+          Посмотреть руководство
         </button>
 
+        <!--
         <button
           class="tutorial-skip-button"
           @click="skipTutorial"
         >
           Skip
         </button>
+        -->
 
       </div>
 
@@ -111,6 +114,10 @@ function skipTutorial() {
 .tutorial-description ul {
   margin-top: 12px;
   margin-bottom: 18px;
+}
+
+.tutorial-description ul li{ 
+  text-align: left;
 }
 
 .tutorial-buttons {

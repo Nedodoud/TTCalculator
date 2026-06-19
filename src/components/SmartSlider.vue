@@ -22,14 +22,37 @@ function clamp(val: number) {
 var currentValue = ref(clamp(props.modelValue ?? props.min));
 
 function setMarks(){
-  const minMax:Record<number, string> = {};
-  minMax[props.min] = props.min.toString();
-  minMax[props.max] = props.max.toString();
+  type Mark = {
+    style?: {
+      color: string;
+    };
+    label: string;
+  };
+  const minMax:Record<number, Mark> = {};
+  minMax[props.min] = {
+          label: props.min.toString()
+        };
+  minMax[props.max] = {
+          label: props.max.toString()
+        };
   if(props.recommended > 0){
-    minMax[props.recommended] = props.recommended.toString();
+    minMax[props.recommended] = 
+          {
+          style: {
+              color: '#67c15d',
+          },
+          label: props.recommended.toString()
+        };
   }
   if(props.predicted > 0){
-    minMax[props.predicted] = props.predicted.toString();
+    minMax[props.predicted] = 
+          {
+          style: {
+            color: '#ebcd53',
+            
+          },
+          label: props.predicted.toString(),
+        };
   }
   // @ts-expect-error unknown external type
   return shallowReactive<Marks>(minMax);

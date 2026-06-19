@@ -14,21 +14,29 @@ const props = defineProps<{
 let nextId = 0;
 
 function addCard() {
+    let suffix = 1;
+    nextId++;
+    let title = `Карточка №${nextId}`;
+    let accId = nextId;
+
+  while (cards.value.some(card => card.title === title)) {
+    title = `${`Карточка №${nextId}`} (${suffix++})`;
+    accId += suffix;
+  }
   console.log(cards);
   cards.value.push({
-    id: nextId++,
-    title: `Card ${nextId}`,
+    id: accId,
+    title: title,
     core: false,
     planned: false,
     tags: [],
     tagValues: {},
     recommendedTagValues: {},
     priority: 0,
-    taskType: "Own mechanics",
+    taskType: "Своя механика",
     complexity: 2, // 👈 дефолт
     recommendedComplexity: 2
   });
-  emit("update:cards", cards.value);
   emit("update:cards", cards.value);
 }
 
@@ -47,14 +55,15 @@ defineExpose({
 <template>
 
   <div class="header-right">
-    <h2>Mechanics cards</h2>
-    <button @click="addCard" >➕ Add Card</button>
+    <h2>Механики</h2>
+    <button @click="addCard" >➕ Добавить механику</button>
       <div class="right">
         <div class="card-list">
           <CardItem
               v-for="card in cards"
               :key="card.id"
               :teamComponents="teamComponents"
+              :cards="cards"
               :card="card"
               @delete="deleteCard"
           />

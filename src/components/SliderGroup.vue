@@ -5,6 +5,7 @@ import PieChart from "./PieChart.vue";
 // основные параметры
 const time = ref<number>(50);
 const teamSize = ref<number>(5);
+const maxTeamSize = 25;
 
 const topHeight = ref(400); // начальная высота в px
 const isResizing = ref(false);
@@ -57,11 +58,19 @@ const tagSums = computed(() => {
 
   // @ts-expect-error unknown external type
 function onInput(comp: Component, e: any) {
+
+  const newVal = e;
+  const currentSumWithoutThis = totalComponents.value - comp.value;
+  console.log(newVal, comp.value, currentSumWithoutThis);
+
+  // не даём выйти за предел
+  const maxAllowed = maxTeamSize - currentSumWithoutThis;
+  const finalValue = Math.min(newVal, maxAllowed);
+
   // повышаем предел
   const updated = totalComponents.value;
   teamSize.value = updated;
-
-  updateComponent(comp.tag, e);
+  updateComponent(comp.tag, finalValue);
   emit("update:teamSize", updated);
   
 }
@@ -128,7 +137,7 @@ const resourceWarnings = computed(() => {
 
     if (value > team.value) {
       warnings.push(
-        `${tag}: required ${value}, but you have only ${team.value}`
+        `${tag}: требуется в количестве ${value}, но у вас есть только ${team.value}`
       );
     }
   });
@@ -170,7 +179,7 @@ const recommendationText = computed(() => {
   const allCards = props.cards;
 
   if (allCards.length === 0) {
-    return ["No tasks available for analysis."];
+    return ["Для анализа нет доступных задач."];
   }
 
   // =========================
@@ -183,7 +192,7 @@ const recommendationText = computed(() => {
       : props.cards.filter(c => c.priority === selectedPriority.value);;
 
   if (tasks.length === 0) {
-    return ["No tasks for selected priority."];
+    return ["Задач по выбранному приоритету нет."];
   }
 
   const recommendations: string[] = [];
@@ -200,7 +209,7 @@ const recommendationText = computed(() => {
 
   if (maxTask.complexity > avgTime * 1.5) {
     recommendations.push(
-      `Task "${maxTask.title}" dominates the timeline. Optimizing it will have the biggest impact.`
+      `Задача "${maxTask.title}": занимает доминирующее положение во временной шкале. Оптимизация окажет наибольшее влияние.`
     );
   }
 
@@ -211,7 +220,7 @@ const recommendationText = computed(() => {
     const acComplexity = task.planned ? task.complexity : task.complexity * 7; 
     if (acComplexity < avgTime * 0.5) {
       recommendations.push(
-        `Task "${task.title}" is much shorter than others. Consider reallocating resources.`
+        `Задача "${task.title}": гораздо короче других. Рассмотрите возможность перераспределения ресурсов.`
       );
     }
   });
@@ -311,7 +320,7 @@ const recommendationText = computed(() => {
     if (maxUsed === 0 && available > 0) {
 
       recommendations.push(
-        `Unused resource detected: ${tag} has ${available} assigned team members, but no tasks currently use this resource.`
+        `Обнаружен неиспользуемый ресурс: ${available} чел. "${tag}" назначен(ы) в члены команды, но в настоящее время ни одна задача не использует этот ресурс.`
       );
 
     }
@@ -324,7 +333,7 @@ const recommendationText = computed(() => {
     if (maxUsed !== 0 && maxUsed < available) {
 
       recommendations.push(
-        `Underutilized resource: ${tag} uses at most ${maxUsed}/${available} available team members across priorities.`
+      `Недоиспользуемый ресурс: "${tag}" используется максимум ${maxUsed}/${available} из доступных членов команды по всем приоритетам.`
       );
 
     }
@@ -335,7 +344,7 @@ const recommendationText = computed(() => {
     else if (maxUsed > available) {
 
       recommendations.push(
-        `Resource overload: ${tag} requires ${maxUsed}, but only ${available} team members are available at peak priority load.`
+        `Перегрузка ресурсов: ${tag} требуется ${maxUsed}, но только ${available} членов команды доступно в часы пиковой нагрузки.`
       );
 
     }
@@ -354,13 +363,13 @@ const recommendationText = computed(() => {
 
       if (actual > recommended * 1.5 && recommended > 0) {
         recommendations.push(
-          `Task "${task.title}" has too many ${tag} resources. Efficiency may decrease.`
+          `Задача "${task.title}": имеет слишком много "${tag}" ресурсов. Эффективность может падать`
         );
       }
 
       if (actual < recommended) {
         recommendations.push(
-          `Task "${task.title}" may benefit from more ${tag} resources.`
+          `Задача "${task.title}": может получить больше пользы, если использовать роль "${tag}"`
         );
       }
 
@@ -379,13 +388,13 @@ const recommendationText = computed(() => {
 
     if (actualTime > recommendedTime * 1.5) {
       recommendations.push(
-        `Task "${task.title}" is expected to take much longer than recommended.`
+        `Задача "${task.title}": ожидается, что это займет гораздо больше времени, чем рекомендуется.`
       );
     }
 
     if (actualTime < recommendedTime * 0.7) {
       recommendations.push(
-        `Task "${task.title}" is faster than expected. Resources might be redistributed.`
+        `Задача "${task.title}": процесс идёт быстрее, чем ожидалось. Возможно, потребуется перераспределение ресурсов.`
       );
     }
 
@@ -398,7 +407,7 @@ const recommendationText = computed(() => {
 
   if (unplannedTasks.length > 0) {
     recommendations.push(
-      `There are ${unplannedTasks.length} tasks without planned time. This reduces prediction accuracy.`
+      `Здесь есть ${unplannedTasks.length} задачи, не имеющие оценки времени в днях. Это снижает точность прогнозирования.`
     );
   }
 
@@ -406,7 +415,7 @@ const recommendationText = computed(() => {
   // fallback
   // =========================
   if (recommendations.length === 0) {
-    return ["Resource allocation and task distribution look balanced."];
+    return ["Распределение ресурсов и задач выглядит сбалансированным."];
   }
 
   return recommendations;
@@ -419,6 +428,16 @@ function resetAll() {
   emit("reset-all");
 }
 
+function onTeamSizeInput(e: any) {
+
+  const newVal = e;
+  const finalValue = Math.max(newVal, totalComponents.value);
+  
+  teamSize.value = finalValue;
+  console.log(newVal, totalComponents.value);
+  emit("update:teamSize", finalValue);
+  
+}
 
 </script>
 
@@ -431,49 +450,49 @@ function resetAll() {
       <div class="header-block">
         <el-tooltip class="box-item" effect="dark" placement="bottom-start">
           <template #content>
-            Here you need to enter the resources available to your team for project development, namely:
+            Здесь необходимо указать ресурсы, доступные вашей команде для разработки проекта, а именно:
             <ul>
-              <li>Estimated development time</li>
-              <li>Total number of people on the team</li>
+              <li>Ориентировочное время разработки в рабочих днях (8 часов в сутки)</li>
+              <li>Общее количество человек в команде</li>
             </ul>
-            Please note: the estimated development time is indicated in working days, assuming that one working day lasts 8 hours.
           </template>
           <el-icon :size="25" color="var(--negative-accent)" ><QuestionFilled /></el-icon>
         </el-tooltip>
-        <h2>Resourses</h2> 
+        <h2>Ресурсы</h2> 
         <el-tooltip class="box-item" effect="dark" placement="bottom-start">
           <template #content>
-            Clear all
+            Очистить всё
           </template>
-          <el-button size="small" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
-            Clear all</el-button>
+          <el-button class="clear-button" size="default" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
+            Очистить всё</el-button>
 
         </el-tooltip>
       </div>
 
       <!-- Слайдер времени -->
       <div class="slider-block">
-        <span class="demonstration"> Desired time</span>
+        <span class="demonstration"> Желаемое время</span>
         <el-slider v-model.number="time"  :min="1" :max="365" show-input />
       </div>
 
       <!-- Слайдер команды -->
       
       <div class="slider-block" data-tutorial="team-size-slider">
-        <span class="demonstration">Desired number of team members</span>
-        <el-slider v-model.number="teamSize"  :min="1" :max="25" show-input />
+        <span style="display: inline-block; line-height: 1.0;" class="demonstration">Желаемое количество <br>членов команды</span>
+        <el-slider v-model.number="teamSize"  :min="1" :max="25" show-input 
+        @change="onTeamSizeInput($event)"/>
       </div>
 
       <!-- Роли в команде -->
       <div class="top" data-tutorial="team-roles">
-        <h2>Roles</h2>
+        <h2>Роли</h2>
 
         <div v-for="comp in props.components" 
           :key="comp.tag"
           class="slider-block">
 
             <span class="demonstration" >{{ comp.tag }}</span>
-            <el-slider v-model.number="comp.value"  :min="0" :max="50" show-input 
+            <el-slider v-model.number="comp.value"  :min="0" :max="25" show-input 
                 @change="onInput(comp, $event)"/>
         
           </div>
@@ -499,10 +518,10 @@ function resetAll() {
             :class="{ active: selectedPriority === 'total' }"
             @click="selectedPriority = 'total'"
           >
-            Total
+            Весь проект
           </button>
         </div>
-      <h2>Recommendations</h2>
+      <h2>Рекомендации</h2>
           <div class="recommendations">
           <!-- приоритет -->
           <div v-if="selectedPriority !== null && selectedPriority !== 'total'">
@@ -519,7 +538,7 @@ function resetAll() {
 
           <!-- ⏱ время -->
           <div class="time">
-            Estimated time required to complete all tasks of the priority #{{ selectedPriority }}: {{ priorityTime }}
+            Примерное время, необходимое для выполнения всех задач приоритетного уровня #{{ selectedPriority }}: {{ priorityTime }}
           </div>
 
           <!-- ⚠️ предупреждения -->
@@ -530,7 +549,7 @@ function resetAll() {
           </div>
              <div class="recommendations">
                 <ul>
-                  <li v-for="(rec, index) in recommendationText" :key="index">
+                  <li class="recommendation-list-item" v-for="(rec, index) in recommendationText" :key="index">
                     {{ rec }}
                   </li>
                 </ul>
@@ -541,12 +560,12 @@ function resetAll() {
           <div v-else-if="selectedPriority === 'total'">
 
             <div class="time">
-              Total time: {{ totalTime }}
+              Общее время: {{ totalTime }}
             </div>
 
               <div class="recommendations">
                 <ul>
-                  <li v-for="(rec, index) in recommendationText" :key="index">
+                  <li class="recommendation-list-item" v-for="(rec, index) in recommendationText" :key="index">
                     {{ rec }}
                   </li>
                 </ul>
@@ -558,6 +577,7 @@ function resetAll() {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .container {
@@ -717,10 +737,16 @@ button:disabled {
   align-items: left;
 }
 
-.recommendations li{
-  display: flex;
+.recommendation-list-item {
   align-items: left;
+  text-align: left;
 }
+
+.recommendation-list-item::marker {
+  color: var(--accent);
+  font-size: 1.2em;
+}
+
 
 .tag-sum-container-list {
   width: 30%;
@@ -736,5 +762,14 @@ button:disabled {
 
 .tag-sum-container {
   display: flex;
+}
+.clear-button 
+{
+  border-radius: 4px; 
+  background: var(--accent);
+  color: var(--tooltip-text);
+  
+  font-weight: bold;
+  border: none;
 }
 </style>

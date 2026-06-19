@@ -210,7 +210,7 @@ onUnmounted(() => {
       :style="tooltipStyle"
     >
       <div class="tutorial-step-counter">
-        Step {{ currentStepIndex + 1 }}
+        Шаг {{ currentStepIndex + 1 }}
         /
         {{ tutorialSteps.length }}
       </div>
@@ -226,7 +226,7 @@ onUnmounted(() => {
           @click.stop="prevStep"
           :disabled="currentStepIndex === 0"
         >
-          Previous
+          Предыдущий шаг
         </button>
 
         <button
@@ -235,8 +235,8 @@ onUnmounted(() => {
         >
           {{
             currentStepIndex === tutorialSteps.length - 1
-              ? "Finish"
-              : "Next"
+              ? "Завершить"
+              : "Следующий шаг"
           }}
         </button>
 
@@ -333,7 +333,7 @@ onUnmounted(() => {
 .tutorial-button {
   border: none;
 
-  background: #ffffff;
+  background: var(--accent);
   color: white;
 
   border-radius: 8px;
@@ -346,11 +346,11 @@ onUnmounted(() => {
 }
 
 .tutorial-button:hover {
-  background: var(--accent);
+  background: var(--accent-border);
 }
 
 .tutorial-button:disabled {
-  background: #ffffff;
+  background: var(--disabled-accent);
   cursor: default;
 }
 
