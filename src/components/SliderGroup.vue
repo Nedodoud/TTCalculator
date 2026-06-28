@@ -6,14 +6,23 @@ import PieChart from "./PieChart.vue";
 const time = ref<number>(50);
 const teamSize = ref<number>(5);
 const maxTeamSize = 25;
+const tipSize = ref(25);
 
 const topHeight = ref(400); // начальная высота в px
+
 const isResizing = ref(false);
 
 const props = defineProps<{
   components: { tag: string; value: number }[];
   cards: any[];
+  isMobile: boolean;
 }>();
+
+if (props.isMobile){
+  topHeight.value = 800;
+  tipSize.value = 55;
+}
+
 
 const emit = defineEmits<{
   (e: "update:components", value: { tag: string; value: number }[]): void;
@@ -447,7 +456,8 @@ function onTeamSizeInput(e: any) {
     <div class="top" 
     :style="{ height: topHeight + 'px' }">
 
-      <div class="header-block">
+      <div :class="{ mobile: props.isMobile }"
+            class="header-block">
         <el-tooltip class="box-item" effect="dark" placement="bottom-start">
           <template #content>
             Здесь необходимо указать ресурсы, доступные вашей команде для разработки проекта, а именно:
@@ -456,28 +466,35 @@ function onTeamSizeInput(e: any) {
               <li>Общее количество человек в команде</li>
             </ul>
           </template>
-          <el-icon :size="25" color="var(--negative-accent)" ><QuestionFilled /></el-icon>
+          <el-icon :size="tipSize" color="var(--negative-accent)" ><QuestionFilled /></el-icon>
         </el-tooltip>
-        <h2>Ресурсы</h2> 
-        <el-tooltip class="box-item" effect="dark" placement="bottom-start">
+        <h2 
+          :class="{ mobileheader: props.isMobile }">
+      Ресурсы</h2> 
+        <el-tooltip class="box-item" 
+            effect="dark" placement="bottom-start">
           <template #content>
             Очистить всё
           </template>
-          <el-button class="clear-button" size="default" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
+          <el-button class="clear-button" "
+            size="default" color="var(--negative-accent)" icon="Refresh" data-tutorial="reset-buttons" @click="resetAll" > 
             Очистить всё</el-button>
 
         </el-tooltip>
       </div>
 
       <!-- Слайдер времени -->
-      <div class="slider-block">
+      <div class="slider-block" 
+      :class="{ mobile: props.isMobile }">
         <span class="demonstration"> Желаемое время</span>
         <el-slider v-model.number="time"  :min="1" :max="365" show-input />
       </div>
 
       <!-- Слайдер команды -->
       
-      <div class="slider-block" data-tutorial="team-size-slider">
+      <div class="slider-block"     
+          :class="{ mobile: props.isMobile }"
+          data-tutorial="team-size-slider">
         <span style="display: inline-block; line-height: 1.0;" class="demonstration">Желаемое количество <br>членов команды</span>
         <el-slider v-model.number="teamSize"  :min="1" :max="25" show-input 
         @change="onTeamSizeInput($event)"/>
@@ -485,11 +502,13 @@ function onTeamSizeInput(e: any) {
 
       <!-- Роли в команде -->
       <div class="top" data-tutorial="team-roles">
-        <h2>Роли</h2>
+        <h2 
+          :class="{ mobileheader: props.isMobile }">Роли</h2>
 
         <div v-for="comp in props.components" 
           :key="comp.tag"
-          class="slider-block">
+          class="slider-block"
+          :class="{ mobile: props.isMobile }">
 
             <span class="demonstration" >{{ comp.tag }}</span>
             <el-slider v-model.number="comp.value"  :min="0" :max="25" show-input 
@@ -499,17 +518,22 @@ function onTeamSizeInput(e: any) {
         </div>
       </div>
       <!-- ручка для изменениея размера ферхнего блока-->
-      <div class="resize-handle" @mousedown="startResize" data-tutorial="team-resize-hangle"></div>
+      <div v-if="!isMobile" class="resize-handle" @mousedown="startResize" data-tutorial="team-resize-hangle"></div>
 
     <!-- 🔽 НИЗ -->
+      <h2
+          :class="{ mobileheader: props.isMobile }">Рекомендации</h2>
+          
     <div class="bottom" data-tutorial="recommendation-block">
-          <div class="priority-buttons" data-tutorial="recommendation-priority-buttons">
-          <button 
-            v-for="p in priorities"
-            :key="p"
-            :class="{ active: selectedPriority === p }"
-            @click="selectedPriority = p"
-          >
+          <div class="priority-buttons" 
+            :class="{ mobile: props.isMobile }"
+            data-tutorial="recommendation-priority-buttons">
+            <button 
+              v-for="p in priorities"
+              :key="p"
+              :class="{ active: selectedPriority === p }"
+              @click="selectedPriority = p"
+            >
             {{ p }}
           </button>
 
@@ -521,35 +545,39 @@ function onTeamSizeInput(e: any) {
             Весь проект
           </button>
         </div>
-      <h2>Рекомендации</h2>
+
           <div class="recommendations">
-          <!-- приоритет -->
-          <div v-if="selectedPriority !== null && selectedPriority !== 'total'">
-             <!-- суммы тегов -->
-          
-          <div class="tag-sum-container"> 
-            <PieChart :data="tagSums" />
-            <div class="tag-sum-container-list" >
-              <div v-for="(value, tag) in tagSums" :key="tag">
-                {{ tag }}: {{ value }}
+            <!-- приоритет -->
+            <div v-if="selectedPriority !== null && selectedPriority !== 'total'">
+              <!-- суммы тегов -->
+              <div class="tag-sum-container"> 
+                <PieChart :data="tagSums" />
+                <div class="tag-sum-container-list" >
+                  <div v-for="(value, tag) in tagSums" :key="tag"
+                    :class="{ mobiletext: props.isMobile }">
+                    {{ tag }}: {{ value }}
               </div>
             </div>
           </div>
 
           <!-- ⏱ время -->
-          <div class="time">
+          <div class="time"
+              :class="{ mobiletext: props.isMobile }">
             Примерное время, необходимое для выполнения всех задач приоритетного уровня #{{ selectedPriority }}: {{ priorityTime }}
           </div>
 
           <!-- ⚠️ предупреждения -->
           <div v-if="resourceWarnings.length > 0" class="warnings">
-            <div v-for="w in resourceWarnings" :key="w">
+            <div v-for="w in resourceWarnings" :key="w" 
+                    :class="{ mobiletext: props.isMobile }">
               ⚠️ {{ w }}
             </div>
           </div>
              <div class="recommendations">
                 <ul>
-                  <li class="recommendation-list-item" v-for="(rec, index) in recommendationText" :key="index">
+                  <li class="recommendation-list-item"
+                    :class="{ mobiletext: props.isMobile }"
+                     v-for="(rec, index) in recommendationText" :key="index">
                     {{ rec }}
                   </li>
                 </ul>
@@ -559,13 +587,15 @@ function onTeamSizeInput(e: any) {
           <!-- total -->
           <div v-else-if="selectedPriority === 'total'">
 
-            <div class="time">
+            <div class="time" 
+                :class="{ mobiletext: props.isMobile }">
               Общее время: {{ totalTime }}
             </div>
 
               <div class="recommendations">
                 <ul>
-                  <li class="recommendation-list-item" v-for="(rec, index) in recommendationText" :key="index">
+                  <li class="recommendation-list-item"
+                    :class="{ mobiletext: props.isMobile }" v-for="(rec, index) in recommendationText" :key="index">
                     {{ rec }}
                   </li>
                 </ul>
@@ -588,7 +618,6 @@ function onTeamSizeInput(e: any) {
 
 /* ВЕРХ 1/3 */
 .top {
-  border-bottom: 1px solid #ccc;
   padding-bottom: 10px;
   overflow: auto;
 }
@@ -636,39 +665,15 @@ function onTeamSizeInput(e: any) {
   margin-bottom: 0;
 }
 
-.stepper {
-  vertical-align: middle;
-  width: 150px;
-  line-height: 30px;
-  display: inline-flex;
-  position: relative;
-  
-}
-
-
-.stepper .el-input {
-      --el-input-text-color: var(--el-text-color-regular);
-    --el-input-border: var(--el-border);
-    --el-input-hover-border: var(--el-border-color-hover);
-    --el-input-focus-border: var(--el-color-primary);
-    --el-input-transparent-border: 0 0 0 1px transparent inset;
-    --el-input-border-color: var(--el-border-color);
-    --el-input-border-radius: var(--el-border-radius-base);
-    --el-input-bg-color: var(--el-fill-color-blank);
-    --el-input-icon-color: var(--el-text-color-placeholder);
-    --el-input-placeholder-color: var(--el-text-color-placeholder);
-    --el-input-hover-border-color: var(--el-border-color-hover);
-    --el-input-clear-hover-color: var(--el-text-color-secondary);
-    --el-input-focus-border-color: var(--el-color-primary);
-    --el-input-width: 100%;
-    --el-input-height: var(--el-component-size);
-    font-size: var(--el-font-size-base);
-    width: var(--el-input-width);
-    line-height: var(--el-input-height);
-    box-sizing: border-box;
-    vertical-align: middle;
-    display: inline-flex;
-    position: relative;
+.mobile .demonstration {
+  font-size: var(--text-font-size-mobile);
+  color: var(--el-text-color-secondary);
+  line-height: 44px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 0;
 }
 
 .slider-block .demonstration:hover {
@@ -685,6 +690,24 @@ function onTeamSizeInput(e: any) {
 .slider-block .demonstration + .el-slider {
   flex: 0 0 70%;
 }
+
+.mobile .demonstration + .el-slider {
+  flex: 0 0 50%;
+  margin-left: 4%;
+    --el-slider-height: 20px;
+    --el-slider-button-size: 50px;
+    --el-slider-button-wrapper-size: 40px;
+    --el-slider-button-wrapper-offset: -15px;    
+    --el-slider-border-radius: 6px;
+    height: 80px;
+}
+
+.slider-block.mobile :deep(.el-input) {
+    --el-input-height: 60px;
+    --el-input-border-radius: 6px;
+    font-size: var(--text-font-size-mobile);
+}
+
 
 /* Роли */
 .components {
@@ -710,6 +733,15 @@ function onTeamSizeInput(e: any) {
   cursor: pointer;
   border-radius: 4px;
 }
+
+.priority-buttons.mobile button
+{
+  font-size: var(--text-font-size-mobile);
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
 
 .priority-buttons button.active {
   background: var(--accent);
@@ -763,6 +795,19 @@ button:disabled {
 .tag-sum-container {
   display: flex;
 }
+
+.mobile .clear-button 
+{
+  margin-left: 10px;
+  font-size: var(--text-font-size-mobile);
+  border-radius: 10px; 
+  background: var(--accent);
+  color: var(--tooltip-text);
+  height: 60px;
+  font-weight: bold;
+  border: none;
+}
+
 .clear-button 
 {
   border-radius: 4px; 
@@ -772,4 +817,8 @@ button:disabled {
   font-weight: bold;
   border: none;
 }
+
 </style>
+
+
+

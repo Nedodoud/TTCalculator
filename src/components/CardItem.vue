@@ -9,8 +9,8 @@ const props = defineProps<{
   teamComponents: { tag: string; value: number }[];
   cards : Card[];
   card: Card;
+  isMobile: boolean;
 }>();
-
 
 const emit = defineEmits<{
   (e: "delete", id: number): void;
@@ -266,26 +266,29 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
     <div class="card-header">
     <div class="title-container">
         <!-- TEXT -->
-        <span
+        <div
         v-if="!isEditing"
         class="title-text"
+        :class="{ mobilebutton: props.isMobile }"
         @click="startEditing"
         >
         {{ card.title }}
-        </span>
+        </div>
 
         <!-- INPUT -->
         <input
         v-else
         ref="titleInput"
         class="title-input"
+        :class="{ mobilebutton: props.isMobile }"
         :value="card.title"
         @input="onInput"
         @blur="stopEditing"
         @keyup.enter="stopEditing"
         />
     </div>
-     <button class="delete-btn" @click="emit('delete', card.id)" >
+     <button class="delete-btn"
+        :class="{ mobilebutton: props.isMobile }" @click="emit('delete', card.id)" >
       <el-icon><Delete /></el-icon>
       </button> 
     </div>
@@ -295,7 +298,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
       <!-- LEFT -->
       <div class="left">
         <div class="priority">
-              <label>Приоритет:</label>
+              <label :class="{ mobiletext: props.isMobile }">Приоритет:</label>
               <el-input-number 
                 :max="20"
                 :value-on-clear="1"
@@ -304,17 +307,13 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 
             </div>
         <!-- CHECKBOXES -->
-        <!--<label>
-          <input type="checkbox" v-model="card.core" />
-          Core
-        </label>-->
 
-        <label>
-          <input type="checkbox" v-model="card.planned" />
+        <label :class="{ mobiletext: props.isMobile }">
+          <input class="labeled-checkbox" type="checkbox" v-model="card.planned" />
             Оценка в рабочих днях
         </label>
-        <div class="task-type">
-            <label>Тип механики:</label>
+        <div class="task-type"  :class="{ mobile: props.isMobile }">
+            <label :class="{ mobiletext: props.isMobile }">Тип механики:</label>
             
                <el-select class="in-task-type" v-model="card.taskType" 
                           placeholder="Своя механика" 
@@ -327,22 +326,22 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
                 </el-select>
                 </div>
 
-        <div v-if="missingRecommendedTags.length > 0" class="recommended-tags">
+        <div v-if="missingRecommendedTags.length > 0" class="recommended-tags" :class="{ mobiletext: props.isMobile }">
                     Рекомендованные теги:
-                    <span v-for="tag in missingRecommendedTags" :key="tag">
+                    <span  :class="{ mobiletext: props.isMobile }" v-for="tag in missingRecommendedTags" :key="tag">
                         {{ tag }}
                     </span>
                     </div>
 
         <!-- TAGS -->
         <div class="tags-section">
-          <button @click="showTagSelector = !showTagSelector">
+          <button :class="{ mobiletext: props.isMobile }" @click="showTagSelector = !showTagSelector">
             ➕ Добавить роль
           </button>
 
           <!-- список выбора -->
           <div v-if="showTagSelector" class="tag-selector">
-            <div
+            <div :class="{ mobiletext: props.isMobile }"
               v-for="tag in availableTags"
               :key="tag"
               class="tag-option"
@@ -351,16 +350,16 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
               {{ tag }}
             </div>
 
-            <div v-if="availableTags.length === 0">
-              All tags added
+            <div v-if="availableTags.length === 0" :class="{ mobiletext: props.isMobile }">
+              Все роли уже добавлены
             </div>
           </div>
         
           <!-- выбранные теги -->
         <div class="tag-list">
             <div v-for="tag in card.tags" :key="tag" class="tag">
-                <span>{{ tag }}</span>
-                <button class="tag-delete" @click="removeTag(tag)">✖</button>
+                <span :class="{ mobiletext: props.isMobile }">{{ tag }}</span>
+                <button class="tag-delete" :class="{ mobiletext: props.isMobile }" @click="removeTag(tag)">✖</button>
             </div>
         </div>
         </div>
@@ -369,7 +368,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
       <!-- RIGHT -->
     <div class="right">
         <div class="slider-block main-slider">
-            <label class="slider-label">
+            <label class="slider-label" :class="{ mobiletext: props.isMobile }" >
                 {{ complexityLabel }}
             </label>
 
@@ -379,6 +378,7 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
               :max="complexityMax"
               :recommended="TASK_TYPES[card.taskType]?.complexity ?? -1"
               :predicted="computePredictedPlannedTime(card.taskType, card)"
+              :isMobile="props.isMobile"    
             />
         </div>
     <div
@@ -387,13 +387,13 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
   class="slider-block"
 >
 
-        <label class="slider-label">{{ tag }}</label>
+        <label class="slider-label" :class="{ mobiletext: props.isMobile }">{{ tag }}</label>
         <!--            :modelValue="Math.min(card.tagValues[tag], getMaxForTag(tag))" -->
         <SmartSlider
             v-model="card.tagValues[tag]"
             :min="0"
             :max="getMaxForTag(tag)"
-
+            :isMobile="props.isMobile" 
             :recommended="getRecommendedForTag(tag, card.taskType)"
             :predicted="-1"
           />
@@ -433,6 +433,9 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 /* автоуменьшение */
 .title-text {
   width: 100%;
+  height: 100%;
+  margin-bottom: 0px;
+  line-height: 100%;
   text-align: left;
   cursor: pointer;
 
@@ -440,13 +443,10 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  font-size: clamp(10px, 2vw, 16px);
 }
 
 .title-input {
   width: 100%;
-  font-size: 16px;
   border: none;
   outline: none;
 }
@@ -510,6 +510,25 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
   gap: 6px;
 }
 
+.mobile .el-select{
+    font-size: var(--text-font-size-mobile);
+    height: 80px;
+}
+
+.mobile :deep(.el-select__selected-item){
+    font-size: var(--text-font-size-mobile);
+    line-height:  60px;
+    height: 80px;
+}
+.mobile :deep(.el-select__wrapper){
+    font-size: var(--text-font-size-mobile);
+    height: 80px;
+}
+
+.mobile el-option {
+    font-size: var(--text-font-size-mobile);
+}
+
 .right {
   width: 50%;
   display: flex;
@@ -528,7 +547,6 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 
 /* название */
 .slider-label {
-  font-size: 14px;
   margin-bottom: 4px;
 }
 
@@ -575,14 +593,12 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 
 .tag-delete {
   width: 16px;
-  height: 16px;
-  font-size: 10px;
-  line-height: 1;
 
   border: none;
   background: #bbb;
   cursor: pointer;
   border-radius: 2px;
+  margin-bottom: 0px;
 }
 
 .tag-delete:hover {
@@ -612,9 +628,9 @@ function getRecommendedForTag(tag: string, cardTaskType: string): number {
 }
 
 .recommended-tags {
-  font-size: 12px;
   color: #929292;
 }
+
 
 .tags-section {
   width: 90%;

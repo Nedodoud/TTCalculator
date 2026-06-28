@@ -7,6 +7,10 @@ import TutorialOverlay from "../components/tutorial/TutorialOverlay.vue";
 import TutorialWelcomeModal from "../components/tutorial/TutorialWelcomeModal.vue";
 import type { Card } from "../types";
 
+const props = defineProps<{
+    isMobile: boolean;
+}>();
+
 // 👇 глобальное состояние команды
 const teamComponents = ref([
   { tag: "Разработчик", eng: "Engineer", value: 0, extraEffCoef: 0.2 },
@@ -191,7 +195,8 @@ function toggleCardsDrawer() {
             <SliderGroup
                 v-model:components="teamComponents"
                 @reset-all="resetAllData"
-                :cards="cards"
+                :cards="cards"        
+                :isMobile="props.isMobile"              
             />
         </div>
 
@@ -209,7 +214,8 @@ function toggleCardsDrawer() {
         <button
 
             class="drawer-button"
-
+            :class="{ drawerbuttonposleft: cardsDrawerOpened }"
+            
             @click="toggleCardsDrawer"
 
         >
@@ -225,9 +231,7 @@ function toggleCardsDrawer() {
             class="cards-drawer"
 
             :class="{
-
                 open: cardsDrawerOpened
-
             }"
 
         >
@@ -235,6 +239,7 @@ function toggleCardsDrawer() {
                 ref="cardListRef"
                 :teamComponents="teamComponents"
                 v-model:cards="cards"
+                :isMobile="props.isMobile"
                 data-tutorial="task-card-list"
                 />
 
@@ -291,16 +296,18 @@ width: 100%;
 }
 
 .tutorial-open-button {
-  padding: 8px;
+    padding: 8px 15px;
   margin: 4px;
-  border-radius: 4px;
+  border-radius: 10px;
+  margin-bottom:15px;
+  margin-top:20px;
 
   border: none;
 
   background: var(--accent);
   color: var(--tooltip-text);
 
-  font-size: 14px;
+  font-size: var(--text-font-size-mobile);
   font-weight: bold;
 
   cursor: pointer;
@@ -338,32 +345,26 @@ width: 100%;
 }
 
 .drawer-button{
-
     position:fixed;
-
-    top:50%;
-
     right:0;
-
+    border-radius:12px 0 0 12
+    px;
+    top:50%;
     transform:translateY(-50%);
-
-    width:38px;
-
-    height:120px;
-
-    border-radius:12px 0 0 12px;
-
+    width:60px;
+    height:240px;
     z-index:600;
-
     border:none;
-
     background: var(--accent);
-
     color: var(--tooltip-text);
-
-    font-size:22px;
-
+    font-size:44px;
     cursor:pointer;
-
+    transition:right .35s ease;
 }
+
+.drawer-button.drawerbuttonposleft{
+    position:fixed;
+    right: calc(100% - 60px);
+    border-radius:0 12px 12px 0;
+    }
 </style>

@@ -8,6 +8,7 @@ const props = defineProps<{
   max: number;
   recommended: number;
   predicted: number;
+  isMobile: boolean;
 }>();
 
 
@@ -86,8 +87,8 @@ watch(
 </script>
 
 <template>
-  <div class="smart-slider">
-    <div class="slider-block"
+  <div class="smart-slider" :class="{ mobile: props.isMobile }">
+    <div class="slider-block" :class="{ mobile: props.isMobile }"
     :data-props="JSON.stringify({ max, min, recommended, predicted })">
 
 
@@ -110,6 +111,13 @@ watch(
   padding-top: 8%;
 }
 
+.smart-slider.mobile {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 10%;
+  padding-top: 0px;
+}
+
 .slider-block {
   max-width: 90%;
 }
@@ -117,6 +125,21 @@ watch(
 .slider-block .el-slider {
   --el-slider-main-bg-color: var(--accent);
   height: 50%;
+}
+
+
+.mobile .el-slider {
+    --el-slider-height: 20px;
+    --el-slider-button-size: 50px;
+    --el-slider-button-wrapper-size: 40px;
+    --el-slider-button-wrapper-offset: -15px;    
+    --el-slider-border-radius: 6px;
+    height: 80px;
+}
+
+.slider-block.mobile :deep(.el-slider__marks-text) {
+  margin-top: calc(var(--text-font-size-mobile) + 10px);
+    font-size: var(--text-font-size-mobile);
 }
 
 /* сам range */

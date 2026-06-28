@@ -9,8 +9,10 @@ const { isMobile } = useIsMobile();
 
 <template>
 
-    <DesktopLayout v-if="!isMobile" />
+    <DesktopLayout v-if="!isMobile" 
+                :isMobile="isMobile"/>
 
-    <MobileLayout v-else />
+    <MobileLayout v-else 
+                :isMobile="isMobile"/>
 
 </template>

@@ -7,6 +7,12 @@ import TutorialOverlay from "../components/tutorial/TutorialOverlay.vue";
 import TutorialWelcomeModal from "../components/tutorial/TutorialWelcomeModal.vue";
 import type { Card } from "../types";
 
+
+const props = defineProps<{
+    isMobile: boolean;
+}>();
+
+
 // 👇 глобальное состояние команды
 const teamComponents = ref([
   { tag: "Разработчик", eng: "Engineer", value: 0, extraEffCoef: 0.2 },
@@ -184,12 +190,14 @@ onUnmounted(() => {
         v-model:components="teamComponents"
         @reset-all="resetAllData"
         :cards="cards"
+        :isMobile="props.isMobile"     
       />
     </div>
 
     <CardList
       ref="cardListRef"
       :teamComponents="teamComponents"
+        :isMobile="props.isMobile"
       v-model:cards="cards"
       data-tutorial="task-card-list"
     />

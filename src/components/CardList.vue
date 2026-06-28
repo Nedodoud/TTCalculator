@@ -9,6 +9,7 @@ const emit = defineEmits(["update:cards"]);
 
 const props = defineProps<{
   teamComponents: { tag: string; value: number }[];
+  isMobile: boolean;
 }>();
 
 let nextId = 0;
@@ -55,8 +56,12 @@ defineExpose({
 <template>
 
   <div class="header-right">
-    <h2>Механики</h2>
-    <button @click="addCard" >➕ Добавить механику</button>
+    <h2 :class="{ mobileheader: props.isMobile }">
+      Механики
+    </h2>
+    <button :class="{ mobilebutton: props.isMobile }" @click="addCard" >
+      ➕ Добавить механику
+    </button>
       <div class="right">
         <div class="card-list">
           <CardItem
@@ -65,6 +70,7 @@ defineExpose({
               :teamComponents="teamComponents"
               :cards="cards"
               :card="card"
+              :isMobile="props.isMobile"    
               @delete="deleteCard"
           />
         </div>
