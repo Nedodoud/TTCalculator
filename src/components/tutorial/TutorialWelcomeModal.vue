@@ -9,11 +9,9 @@ function startTutorial() {
   emit("start");
 }
 
-/*
 function skipTutorial() {
   emit("close");
 }
-  */
 
 </script>
 
@@ -48,14 +46,12 @@ function skipTutorial() {
           Посмотреть руководство
         </button>
 
-        <!--
         <button
           class="tutorial-skip-button"
           @click="skipTutorial"
         >
-          Skip
+          Пропустить руководство
         </button>
-        -->
 
       </div>
 
